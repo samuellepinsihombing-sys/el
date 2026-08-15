@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SXA Store - Masuk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold-50: #fdfcf8;
+            --gold-100: #f9f5e8;
+            --gold-200: #f0e6c8;
+            --gold-300: #e5d4a1;
+            --gold-400: #d4af37;
+            --gold-500: #c5a028;
+            --gold-600: #b8941e;
+            --gold-700: #8b6914;
+            --gold-800: #5c4510;
+            --gold-900: #3d2e0a;
+            --white: #ffffff;
+            --text-dark: #2c2416;
+            --text-muted: #7a6e55;
+            --border: #e8dcc8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fdfcf8 0%, #f5ecd0 50%, #f0e6c8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(1deg); }
+            66% { transform: translate(-20px, 20px) rotate(-1deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(139, 105, 20, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-side {
+            flex: 1;
+            background: linear-gradient(135deg, var(--gold-700) 0%, var(--gold-800) 100%);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-side::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .welcome-side::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .brand {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .brand-logo span {
+            color: var(--gold-300);
+        }
+
+        .brand-tagline {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        .welcome-content p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .welcome-footer {
+            position: relative;
+            z-index: 1;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        .form-side {
+            flex: 1.2;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 40px;
+        }
+
+        .form-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 0;
+            margin-bottom: 35px;
+            background: var(--gold-50);
+            border-radius: 12px;
+            padding: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            background: var(--white);
+            color: var(--gold-700);
+            box-shadow: 0 2px 12px rgba(139, 105, 20, 0.12);
+        }
+
+        .tab-btn.highlight {
+            animation: pulseGold 1.8s ease-in-out infinite;
+            color: var(--gold-700);
+            font-weight: 700;
+        }
+
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); transform: scale(1); }
+            50% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0.15); transform: scale(1.03); }
+        }
+
+        .form-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        @keyframes successIn {
+            from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .auth-success {
+            color: #14532d;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            animation: successIn 0.5s ease;
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            letter-spacing: 0.3px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            background: var(--white);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--gold-400);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #c4b896;
+            font-weight: 300;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold-400);
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            font-size: 0.9rem;
+            color: var(--gold-600);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: var(--gold-700);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px 24px;
+            background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-600) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(197, 160, 40, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            gap: 15px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            background: var(--white);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-social:hover {
+            border-color: var(--gold-300);
+            background: var(--gold-50);
+            transform: translateY(-1px);
+        }
+
+        .btn-social svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--gold-600);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-text a:hover {
+            color: var(--gold-700);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
+                padding-bottom: 40px;
+            }
+
+            .container {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+
+            .welcome-side {
+                padding: 30px 24px;
+                min-height: auto;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.6rem;
+            }
+
+            .welcome-content p {
+                font-size: 0.9rem;
+            }
+
+            .form-side {
+                padding: 30px 24px;
+            }
+
+            .form-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn-primary {
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                padding-bottom: 30px;
+            }
+
+            .container {
+                border-radius: 20px;
+            }
+
+            .welcome-side {
+                padding: 24px 18px;
+            }
+
+            .brand-logo {
+                font-size: 1.6rem;
+            }
+
+            .welcome-content h2 {
+                font-size: 1.3rem;
+            }
+
+            .welcome-content p {
+                font-size: 0.85rem;
+            }
+
+            .form-side {
+                padding: 24px 18px;
+            }
+
+            .form-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .tab-btn {
+                font-size: 0.85rem;
+                padding: 10px 14px;
+            }
+
+            .input-group input {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+
+            .btn-primary {
+                padding: 13px 18px;
+                font-size: 0.95rem;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-side">
+            <div class="brand">
+                <div class="brand-logo">SXA <span>STORE</span></div>
+                <div class="brand-tagline">Premium Shopping Experience</div>
+            </div>
+            <div class="welcome-content">
+                <h2>Selamat Datang Kembali</h2>
+                <p>Masuk ke akun Anda untuk menikmati koleksi produk premium kami dengan pengalaman berbelanja yang tak tertandingi.</p>
+            </div>
+            <div class="welcome-footer">
+                &copy; 2026 SXA Store. All rights reserved.
+            </div>
+        </div>
+
+        <div class="form-side">
+            <div class="form-header">
+                <h1 id="form-title">Masuk ke Akun</h1>
+                <p id="form-subtitle">Selamat datang! Silakan masuk untuk melanjutkan.</p>
+            </div>
+
+            <div class="tab-group">
+                <button class="tab-btn active" onclick="switchTab('login')">Masuk</button>
+                <button class="tab-btn" onclick="switchTab('register')">Daftar</button>
+            </div>
+
+            <form id="login-form" class="form-content active" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="nama@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" placeholder="Masukkan kata sandi" required>
+                </div>
+                <div class="form-row">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        Ingat saya
+                    </label>
+                    <a href="#" class="forgot-password">Lupa kata sandi?</a>
+                </div>
+                <button type="submit" class="btn-primary">Masuk Sekarang</button>
+                <div class="divider">
+                    <span>atau</span>
+                </div>
+                <div class="social-buttons">
+                    <button type="button" class="btn-social">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.03 2.53-2.16 3.31v2.77h3.49c2.04-1.88 3.24-4.64 3.24-7.89z"/>
+                            <path d="M12 24c3.24 0 5.95-1.08 7.94-2.91l-3.49-2.77c-1.08.72-2.45 1.14-4.05 1.14-3.13 0-5.78-2.1-6.73-4.94H2.17v2.84C4.02 21.36 7.76 24 12 24z"/>
+                            <path d="M5.27 14.47c-.25-.72-.39-1.49-.39-2.28s.14-1.56.39-2.28V7.17H2.17C1.43 9.08 1 11.05 1 13s.43 3.92 1.17 5.83l3.1-2.36z"/>
+                            <path d="M12 4.76c1.77 0 3.35.61 4.59 1.8l3.44-3.44C17.94 1.18 15.23 0 12 0 7.76 0 4.02 2.64 2.17 6.17l3.1 2.36c.95-2.84 3.6-4.94 6.73-4.94z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.095-1.695-.375-.3-1.095-.735.015-.75 1.08-.015 1.845.99 2.205 1.425 1.305 2.19 3.39 1.56 4.23 1.185.135-.93.525-1.56.96-1.92-3.36-.375-6.9-1.68-6.9-7.47 0-1.65.585-3 1.545-4.05-.15-.375-.67-1.89.15-3.93 0 0 1.26-.405 4.125 1.56 1.2-.33 2.47-.495 3.75-.495s2.55.165 3.75.495c2.865-1.965 4.125-1.56 4.125-1.56.82 2.04.3 3.555.15 3.93.96 1.05 1.545 2.4 1.545 4.05 0 5.805-3.555 7.11-6.915 7.47.54.465 1.005 1.35 1.005 2.715 0 1.965-.015 3.54-.015 4.02 0 .42.225.915.84.765C20.565 21.795 24 17.31 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </button>
+                </div>
+                <div class="footer-text">
+                    Belum punya akun? <a href="#" onclick="switchTab('register'); return false;">Daftar sekarang</a>
+                </div>
+            </form>
+
+            <form id="register-form" class="form-content" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="nama@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" placeholder="Minimal 8 karakter" id="reg-password" required minlength="8">
+                </div>
+                <div class="input-group">
+                    <label>Konfirmasi Kata Sandi</label>
+                    <input type="password" placeholder="Ulangi kata sandi" id="reg-confirm" required minlength="8">
+                </div>
+                <div class="form-row">
+                    <label class="remember-me">
+                        <input type="checkbox" required>
+                        Saya setuju dengan <a href="#" style="color: var(--gold-600); text-decoration: none;">Syarat & Ketentuan</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">Buat Akun</button>
+                <div class="divider">
+                    <span>atau</span>
+                </div>
+                <div class="social-buttons">
+                    <button type="button" class="btn-social">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.03 2.53-2.16 3.31v2.77h3.49c2.04-1.88 3.24-4.64 3.24-7.89z"/>
+                            <path d="M12 24c3.24 0 5.95-1.08 7.94-2.91l-3.49-2.77c-1.08.72-2.45 1.14-4.05 1.14-3.13 0-5.78-2.1-6.73-4.94H2.17v2.84C4.02 21.36 7.76 24 12 24z"/>
+                            <path d="M5.27 14.47c-.25-.72-.39-1.49-.39-2.28s.14-1.56.39-2.28V7.17H2.17C1.43 9.08 1 11.05 1 13s.43 3.92 1.17 5.83l3.1-2.36z"/>
+                            <path d="M12 4.76c1.77 0 3.35.61 4.59 1.8l3.44-3.44C17.94 1.18 15.23 0 12 0 7.76 0 4.02 2.64 2.17 6.17l3.1 2.36c.95-2.84 3.6-4.94 6.73-4.94z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.095-1.695-.375-.3-1.095-.735.015-.75 1.08-.015 1.845.99 2.205 1.425 1.305 2.19 3.39 1.56 4.23 1.185.135-.93.525-1.56.96-1.92-3.36-.375-6.9-1.68-6.9-7.47 0-1.65.585-3 1.545-4.05-.15-.375-.67-1.89.15-3.93 0 0 1.26-.405 4.125 1.56 1.2-.33 2.47-.495 3.75-.495s2.55.165 3.75.495c2.865-1.965 4.125-1.56 4.125-1.56.82 2.04.3 3.555.15 3.93.96 1.05 1.545 2.4 1.545 4.05 0 5.805-3.555 7.11-6.915 7.47.54.465 1.005 1.35 1.005 2.715 0 1.965-.015 3.54-.015 4.02 0 .42.225.915.84.765C20.565 21.795 24 17.31 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </button>
+                </div>
+                <div class="footer-text">
+                    Sudah punya akun? <a href="#" onclick="switchTab('login'); return false;">Masuk sekarang</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function getAccounts() {
+            try {
+                return JSON.parse(localStorage.getItem('goldenStoreAccounts') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function saveAccount(account) {
+            const accounts = getAccounts();
+            accounts.push(account);
+            localStorage.setItem('goldenStoreAccounts', JSON.stringify(accounts));
+        }
+
+        function showError(message, isNoAccount) {
+            const existing = document.querySelector('.auth-error');
+            if (existing) existing.remove();
+
+            const error = document.createElement('div');
+            error.className = 'auth-error';
+            error.textContent = message;
+
+            if (isNoAccount) {
+                error.style.cssText = 'color:#78350f;background:#fffbeb;border:1px solid #fcd34d;padding:14px 18px;border-radius:12px;margin-bottom:18px;font-size:0.95rem;font-weight:600;text-align:center;animation:shake 0.6s ease-in-out, fadeIn 0.4s ease;';
+                const registerBtn = document.querySelectorAll('.tab-btn')[1];
+                registerBtn.classList.add('highlight');
+                setTimeout(() => registerBtn.classList.remove('highlight'), 3000);
+            } else {
+                error.style.cssText = 'color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:0.92rem;font-weight:500;';
+            }
+
+            const activeForm = document.querySelector('.form-content.active');
+            if (activeForm && activeForm.tagName === 'FORM') {
+                activeForm.insertBefore(error, activeForm.firstChild);
+            }
+        }
+
+        function showSuccess(message) {
+            const existing = document.querySelector('.auth-success');
+            if (existing) existing.remove();
+
+            const success = document.createElement('div');
+            success.className = 'auth-success';
+            success.textContent = message;
+            const activeForm = document.querySelector('.form-content.active');
+            if (activeForm && activeForm.tagName === 'FORM') {
+                activeForm.insertBefore(success, activeForm.firstChild);
+            }
+        }
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const loginBtn = document.querySelectorAll('.tab-btn')[0];
+            const registerBtn = document.querySelectorAll('.tab-btn')[1];
+            const formTitle = document.getElementById('form-title');
+            const formSubtitle = document.getElementById('form-subtitle');
+
+            document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.remove());
+
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                loginBtn.classList.add('active');
+                registerBtn.classList.remove('active');
+                formTitle.textContent = 'Masuk ke Akun';
+                formSubtitle.textContent = 'Selamat datang! Silakan masuk untuk melanjutkan.';
+            } else {
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+                registerBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                formTitle.textContent = 'Buat Akun Baru';
+                formSubtitle.textContent = 'Bergabung dengan kami dan nikmati pengalaman berbelanja premium.';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
+            const password = form.querySelector('input[type="password"]').value;
+
+            btn.textContent = 'Sedang masuk...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+
+                const accounts = getAccounts();
+                const account = accounts.find(a => a.email.toLowerCase() === email);
+
+                if (!account) {
+                    showError('Akun belum dibuat nih! Buat akun dulu ya, lalu login lagi.', true);
+                    return;
+                }
+
+                if (account.password !== password) {
+                    showError('Kata sandi salah. Silakan coba lagi.');
+                    return;
+                }
+
+                showSuccess('Login berhasil! Selamat datang, ' + account.name + '.');
+                setTimeout(() => {
+                    window.location.href = 'menu.html';
+                }, 800);
+            }, 600);
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            const name = form.querySelectorAll('input[type="text"]')[0].value.trim();
+            const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
+            const password = form.querySelector('#reg-password').value;
+            const confirm = form.querySelector('#reg-confirm').value;
+
+            if (password !== confirm) {
+                showError('Konfirmasi kata sandi tidak cocok.');
+                return;
+            }
+
+            const accounts = getAccounts();
+            if (accounts.find(a => a.email.toLowerCase() === email)) {
+                showError('Email sudah terdaftar. Silakan masuk.');
+                return;
+            }
+
+            btn.textContent = 'Mendaftar...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                saveAccount({ name, email, password });
+
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+
+                showSuccess('Pendaftaran berhasil! Selamat datang, ' + name + '.');
+                setTimeout(() => {
+                    window.location.href = 'menu.html';
+                }, 600);
+            }, 400);
+        }
+
+        function setupPasswordMatch() {
+            const passwordInput = document.getElementById('reg-password');
+            const confirmInput = document.getElementById('reg-confirm');
+            const form = document.getElementById('register-form');
+
+            let warningEl = document.getElementById('password-match-warning');
+
+            const updateWarning = () => {
+                if (!warningEl && passwordInput.value && confirmInput.value && passwordInput.value !== confirmInput.value) {
+                    warningEl = document.createElement('div');
+                    warningEl.id = 'password-match-warning';
+                    warningEl.style.cssText = 'color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:10px 14px;border-radius:10px;margin-top:8px;font-size:0.88rem;font-weight:500;';
+                    confirmInput.parentNode.appendChild(warningEl);
+                }
+
+                if (warningEl) {
+                    if (passwordInput.value && confirmInput.value && passwordInput.value !== confirmInput.value) {
+                        warningEl.textContent = 'Kata sandi tidak cocok.';
+                        warningEl.style.display = 'block';
+                    } else {
+                        warningEl.style.display = 'none';
+                    }
+                }
+            };
+
+            passwordInput.addEventListener('input', updateWarning);
+            confirmInput.addEventListener('input', updateWarning);
+        }
+
+        setupPasswordMatch();
+    </script>
+</body>
+</html>
