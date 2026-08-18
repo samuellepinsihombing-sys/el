@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekretariat Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff8fab;
+            --primary-dark: #fb6f92;
+            --bg: #fff0f3;
+            --card: #ffffff;
+            --text: #590d22;
+            --text-light: #800f2f;
+            --accent: #ffe5ec;
+            --danger: #ff4d6d;
+            --success: #25d366;
+            --rpl-blue: #2196f3;
+            --rpl-light: #e3f2fd;
+            --border-subtle: #ffd6e7;
+            --input-bg: #ffe5ec;
+            --shape-opacity: 0.15;
+        }
+
+        body.dark-theme {
+            --primary: #6c63ff;
+            --primary-dark: #5a52d5;
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --text: #e0e0e0;
+            --text-light: #a0a0b0;
+            --accent: #16213e;
+            --danger: #ff4d6d;
+            --success: #25d366;
+            --rpl-blue: #4fc3f7;
+            --rpl-light: #1a2a3e;
+            --border-subtle: #2a2a4a;
+            --input-bg: #16213e;
+            --shape-opacity: 0.08;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        
+        body { 
+            background: var(--bg); color: var(--text); min-height: 100vh; 
+            display: flex; justify-content: center; align-items: center; 
+            padding: 20px; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .shape { position: absolute; border-radius: 50%; opacity: var(--shape-opacity); animation: floatShape 20s infinite ease-in-out; }
+        .shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -50px; left: -80px; }
+        .shape:nth-child(2) { width: 200px; height: 200px; background: var(--primary); bottom: 10%; right: -60px; animation-delay: -5s; animation-duration: 25s; }
+        .shape:nth-child(3) { width: 150px; height: 150px; background: var(--primary-dark); top: 40%; left: 60%; animation-delay: -10s; animation-duration: 18s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; background: var(--primary); bottom: 30%; left: 10%; animation-delay: -7s; animation-duration: 22s; }
+
+        @keyframes floatShape {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -40px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(15px, 30px) scale(1.05); }
+        }
+
+        .login-container {
+            background: var(--card); padding: 40px; border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%; max-width: 400px; text-align: center;
+            animation: fadeSlideUp 0.6s ease; position: relative; z-index: 1;
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-theme .login-container { box-shadow: 0 10px 40px rgba(108, 99, 255, 0.15); }
+
+        .login-logo { font-size: 48px; margin-bottom: 10px; animation: bounceIn 0.8s ease 0.2s both; }
+        .login-title { font-size: 24px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; transition: color 0.5s ease; }
+        .login-subtitle { font-size: 14px; color: var(--text-light); margin-bottom: 30px; opacity: 0.8; transition: color 0.5s ease; }
+
+        .input-group { margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-light); transition: color 0.5s ease; }
+        .input-group input {
+            width: 100%; padding: 14px 16px; border: 2px solid var(--border-subtle);
+            border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s;
+            background: var(--input-bg); color: var(--text);
+        }
+        .input-group input:focus { border-color: var(--primary); background: var(--card); transform: scale(1.01); }
+
+        .btn-login {
+            width: 100%; padding: 14px; background: var(--primary-dark); color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-login:hover { filter: brightness(0.85); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .error-msg { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; font-weight: 600; animation: shake 0.4s ease; }
+
+        .dashboard { display: none; width: 100%; max-width: 700px; position: relative; z-index: 1; }
+        
+        .dash-header {
+            background: var(--card); padding: 24px 30px; border-radius: 20px;
+            margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); animation: fadeSlideDown 0.5s ease;
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-theme .dash-header { box-shadow: 0 4px 20px rgba(108, 99, 255, 0.1); }
+        .dash-header h2 { font-size: 22px; color: var(--primary-dark); transition: color 0.5s ease; }
+        .dash-date { font-size: 14px; color: var(--text-light); font-weight: 600; background: var(--accent); padding: 8px 16px; border-radius: 20px; transition: all 0.5s ease; }
+        .btn-logout { background: none; border: 2px solid var(--primary); color: var(--primary-dark); padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.3s; }
+        .btn-logout:hover { background: var(--primary); color: white; transform: scale(1.05); }
+
+        .form-card {
+            background: var(--card); padding: 30px; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px;
+            opacity: 0; animation: fadeSlideUp 0.5s ease forwards;
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-theme .form-card { box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08); }
+        .form-card:nth-child(2) { animation-delay: 0.1s; }
+        .form-card:nth-child(3) { animation-delay: 0.15s; }
+        .form-card:nth-child(4) { animation-delay: 0.2s; }
+        .form-card:nth-child(5) { animation-delay: 0.25s; }
+        .form-card:nth-child(6) { animation-delay: 0.3s; }
+        .form-card:nth-child(7) { animation-delay: 0.35s; }
+        .form-card:nth-child(8) { animation-delay: 0.4s; }
+
+        .form-card h3 { font-size: 18px; color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; transition: color 0.5s ease; }
+
+        .datetime-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .datetime-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-light); margin-bottom: 8px; transition: color 0.5s ease; }
+        .date-input, .time-input {
+            width: 100%; padding: 14px 16px; border: 2px solid var(--border-subtle);
+            border-radius: 12px; font-size: 16px; font-weight: 600; outline: none;
+            background: var(--input-bg); color: var(--text); font-family: inherit;
+            cursor: pointer; transition: 0.3s;
+        }
+        .date-input:focus, .time-input:focus { border-color: var(--primary); background: var(--card); transform: scale(1.01); }
+        .date-hint { font-size: 12px; color: var(--text-light); margin-top: 8px; opacity: 0.7; grid-column: 1 / -1; transition: color 0.5s ease; }
+
+        body.dark-theme .date-input, body.dark-theme .time-input { color-scheme: dark; }
+
+        /* SERAGAM SELECTOR */
+        .seragam-section-label { font-size: 13px; font-weight: 600; color: var(--text-light); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; transition: color 0.5s ease; }
+        .seragam-section-label:not(:first-of-type) { margin-top: 18px; padding-top: 18px; border-top: 2px dashed var(--border-subtle); }
+        .seragam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .seragam-option {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            padding: 14px 10px; background: var(--accent); border-radius: 12px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent; text-align: center; position: relative;
+        }
+        .seragam-option:hover { transform: translateY(-3px); filter: brightness(0.95); }
+        body.dark-theme .seragam-option:hover { filter: brightness(1.2); }
+        .seragam-option.selected {
+            border-color: var(--primary); background: var(--primary); color: white;
+            transform: scale(1.03); box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .seragam-option input { display: none; }
+        .seragam-icon { font-size: 28px; line-height: 1; }
+        .seragam-label { font-size: 12px; font-weight: 700; line-height: 1.2; }
+        .seragam-badge {
+            position: absolute; top: -6px; right: -6px; background: var(--success);
+            color: white; font-size: 10px; font-weight: 700; padding: 2px 7px;
+            border-radius: 10px; display: none;
+        }
+        .seragam-option.selected .seragam-badge { display: block; }
+
+        .toggle-row {
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            background: var(--accent); border-radius: 12px; cursor: pointer;
+            transition: all 0.3s; margin-bottom: 16px;
+        }
+        .toggle-row:hover { filter: brightness(0.95); }
+        body.dark-theme .toggle-row:hover { filter: brightness(1.2); }
+        .toggle-row.active { background: var(--primary); color: white; }
+        .toggle-row input { accent-color: var(--primary-dark); width: 18px; height: 18px; cursor: pointer; }
+        .toggle-row.active input { accent-color: white; }
+        .toggle-text { font-weight: 600; font-size: 14px; }
+
+        .rpl-banner {
+            display: none; padding: 16px 20px; border-radius: 12px;
+            background: var(--rpl-light); border-left: 4px solid var(--rpl-blue);
+            margin-top: 16px; animation: fadeIn 0.3s ease;
+        }
+        .rpl-banner.show { display: block; }
+        .rpl-banner-title { font-size: 14px; font-weight: 700; color: var(--rpl-blue); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .rpl-banner-desc { font-size: 13px; color: var(--text-light); transition: color 0.5s ease; }
+
+        .info-preview {
+            background: var(--accent); padding: 16px 20px; border-radius: 12px;
+            display: none; animation: fadeIn 0.3s ease; transition: background 0.5s ease;
+        }
+        .info-preview.show { display: block; }
+        .day-badge {
+            display: inline-block; background: var(--primary-dark); color: white;
+            padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            margin-bottom: 10px; transition: background 0.5s ease;
+        }
+        .day-badge.rpl { background: var(--rpl-blue); }
+
+        .piket-names { display: flex; flex-wrap: wrap; gap: 8px; }
+        .piket-name-tag {
+            background: var(--card); padding: 6px 12px; border-radius: 8px;
+            font-size: 13px; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, background 0.5s ease;
+        }
+        .piket-name-tag:hover { transform: scale(1.05); }
+        body.dark-theme .piket-name-tag { box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        .empty-msg { color: var(--text-light); font-size: 13px; font-style: italic; opacity: 0.7; }
+
+        .roster-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .roster-table th {
+            text-align: left; padding: 8px 12px; background: var(--primary);
+            color: white; font-weight: 600; font-size: 12px; transition: background 0.5s ease;
+        }
+        .roster-table th:first-child { border-radius: 8px 0 0 0; }
+        .roster-table th:last-child { border-radius: 0 8px 0 0; }
+        .roster-table.rpl-table th { background: var(--rpl-blue); }
+        .roster-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-subtle); transition: border-color 0.5s ease; }
+        .roster-table tr:last-child td { border-bottom: none; }
+        .roster-table tr.istirahat td { background: #fff9db; color: #b8860b; font-weight: 600; text-align: center; }
+        body.dark-theme .roster-table tr.istirahat td { background: #2a2510; color: #ffd54f; }
+        .roster-table tr.pulang td { background: #e8f5e9; color: #2e7d32; font-weight: 600; text-align: center; }
+        body.dark-theme .roster-table tr.pulang td { background: #1b2e1b; color: #66bb6a; }
+        .roster-table tr.no-jadwal td { background: #fce4ec; color: #c62828; font-weight: 600; text-align: center; }
+        body.dark-theme .roster-table tr.no-jadwal td { background: #2e1a1a; color: #ef5350; }
+        .roster-table tr.normal td:first-child { font-weight: 600; color: var(--text-light); white-space: nowrap; }
+
+        .task-card { background: var(--accent); padding: 16px; border-radius: 14px; margin-bottom: 12px; position: relative; animation: slideInLeft 0.4s ease; transition: background 0.5s ease; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .task-number { background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; transition: background 0.5s ease; }
+        .btn-remove-task { background: var(--danger); color: white; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-remove-task:hover { filter: brightness(0.85); transform: scale(1.15) rotate(5deg); }
+        .task-row { margin-bottom: 10px; }
+        .task-row label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 4px; transition: color 0.5s ease; }
+        .task-row select, .task-row textarea {
+            width: 100%; padding: 10px 12px; border: 2px solid var(--border-subtle);
+            border-radius: 10px; font-size: 14px; background: var(--card); color: var(--text);
+            outline: none; font-family: inherit; resize: vertical; transition: 0.3s;
+        }
+        .task-row select:focus, .task-row textarea:focus { border-color: var(--primary); transform: scale(1.01); }
+        body.dark-theme .task-row select { color-scheme: dark; }
+        .btn-add-task { width: 100%; padding: 12px; background: var(--card); color: var(--primary-dark); border: 2px dashed var(--primary); border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-add-task:hover { background: var(--accent); transform: translateY(-2px); border-style: solid; }
+
+        .task-section label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-light); transition: color 0.5s ease; }
+        .info-textarea {
+            width: 100%; padding: 14px; border: 2px solid var(--border-subtle); border-radius: 12px;
+            font-size: 14px; outline: none; transition: 0.3s; background: var(--input-bg); color: var(--text); resize: vertical;
+        }
+        .info-textarea:focus { border-color: var(--primary); background: var(--card); transform: scale(1.01); }
+
+        .btn-copy {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-bottom: 20px; opacity: 0; animation: fadeSlideUp 0.5s ease 0.6s forwards;
+        }
+        .btn-copy:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+        .btn-copy:active { transform: scale(0.98); }
+        .btn-copy.copied { background: linear-gradient(135deg, #25d366, #128c7e); }
+
+        .preview-box {
+            background: var(--card); padding: 24px; border-radius: 14px;
+            font-size: 13px; white-space: pre-wrap; line-height: 1.6; color: var(--text); 
+            display: none; box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            animation: fadeIn 0.3s ease; font-family: 'Courier New', monospace;
+            border: 2px solid var(--border-subtle); transition: all 0.5s ease;
+        }
+        body.dark-theme .preview-box { box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08); }
+        .preview-label { font-size: 12px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; font-family: 'Quicksand', sans-serif; transition: color 0.5s ease; }
+
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--card); color: var(--text); padding: 14px 28px; border-radius: 50px;
+            font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15); z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), background 0.5s ease, color 0.5s ease;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.1); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateX(-30px); height: 0; padding: 0; margin: 0; overflow: hidden; } }
+
+        @media (max-width: 500px) {
+            .datetime-row { grid-template-columns: 1fr; }
+            .seragam-grid { grid-template-columns: repeat(2, 1fr); }
+            .dash-header { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shapes">
+        <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div class="login-container" id="loginPage">
+        <div class="login-logo">📋✨</div>
+        <div class="login-title">Sekretariat Dashboard</div>
+        <div class="login-subtitle">Silakan masuk untuk mengelola info kelas</div>
+        <form onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="contoh@gmail.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Masukkan password" required>
+            </div>
+            <button type="submit" class="btn-login">Masuk</button>
+            <div class="error-msg" id="errorMsg">❌ Email atau password salah!</div>
+        </form>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboardPage">
+        <div class="dash-header">
+            <h2 id="greetingText">👋 Halo!</h2>
+            <div class="dash-date" id="currentDate"></div>
+            <button class="btn-logout" onclick="logout()">Keluar</button>
+        </div>
+
+        <!-- DATE + JAM MASUK -->
+        <div class="form-card">
+            <h3>📅 Tanggal & Jam Masuk</h3>
+            <div class="datetime-row">
+                <div class="datetime-field">
+                    <label>Pilih Tanggal</label>
+                    <input type="date" class="date-input" id="selectedDate" required>
+                </div>
+                <div class="datetime-field">
+                    <label>⏰ Jam Masuk Sekolah</label>
+                    <input type="time" class="time-input" id="schoolTime" value="07:00">
+                </div>
+                <div class="date-hint">💡 Tanggal yang sudah lewat tidak bisa dipilih • Jam masuk bisa disesuaikan</div>
+            </div>
+            <div class="rpl-banner" id="rplBanner">
+                <div class="rpl-banner-title">🟦 Kelas Pagi X RPL Terdeteksi!</div>
+                <div class="rpl-banner-desc">Hari ini ada jadwal <strong>Dasar RPL</strong> pagi. Silakan sesuaikan jam masuk sesuai kebutuhan.</div>
+            </div>
+        </div>
+
+        <!-- SERAGAM -->
+        <div class="form-card">
+            <h3>👔 Seragam Besok</h3>
+            
+            <div class="seragam-section-label">🎯 Seragam Utama (Dipakai dari Rumah)</div>
+            <div class="seragam-grid" id="seragamUtamaGrid">
+                <label class="seragam-option" onclick="selectSeragamUtama(this)">
+                    <input type="radio" name="seragam_utama" value="Putih Putih">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🤍</span>
+                    <span class="seragam-label">Putih Putih</span>
+                </label>
+                <label class="seragam-option" onclick="selectSeragamUtama(this)">
+                    <input type="radio" name="seragam_utama" value="Putih Abu-abu">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🩶</span>
+                    <span class="seragam-label">Putih Abu-abu</span>
+                </label>
+                <label class="seragam-option" onclick="selectSeragamUtama(this)">
+                    <input type="radio" name="seragam_utama" value="Olahraga">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🏃</span>
+                    <span class="seragam-label">Olahraga</span>
+                </label>
+                <label class="seragam-option" onclick="selectSeragamUtama(this)">
+                    <input type="radio" name="seragam_utama" value="Pramuka">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">⚜️</span>
+                    <span class="seragam-label">Pramuka</span>
+                </label>
+                <label class="seragam-option" onclick="selectSeragamUtama(this)">
+                    <input type="radio" name="seragam_utama" value="Batik Abu-abu">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🎨</span>
+                    <span class="seragam-label">Batik Abu-abu</span>
+                </label>
+            </div>
+
+            <div class="seragam-section-label">👜 Seragam Tambahan (Opsional — Dibawa)</div>
+            <div class="seragam-grid" id="seragamTambahanGrid">
+                <label class="seragam-option" onclick="toggleSeragamTambahan(this)">
+                    <input type="checkbox" name="seragam_tambahan" value="Putih Putih">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🤍</span>
+                    <span class="seragam-label">Putih Putih</span>
+                </label>
+                <label class="seragam-option" onclick="toggleSeragamTambahan(this)">
+                    <input type="checkbox" name="seragam_tambahan" value="Putih Abu-abu">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🩶</span>
+                    <span class="seragam-label">Putih Abu-abu</span>
+                </label>
+                <label class="seragam-option" onclick="toggleSeragamTambahan(this)">
+                    <input type="checkbox" name="seragam_tambahan" value="Olahraga">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🏃</span>
+                    <span class="seragam-label">Olahraga</span>
+                </label>
+                <label class="seragam-option" onclick="toggleSeragamTambahan(this)">
+                    <input type="checkbox" name="seragam_tambahan" value="Pramuka">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">⚜️</span>
+                    <span class="seragam-label">Pramuka</span>
+                </label>
+                <label class="seragam-option" onclick="toggleSeragamTambahan(this)">
+                    <input type="checkbox" name="seragam_tambahan" value="Batik Abu-abu">
+                    <span class="seragam-badge">✓</span>
+                    <span class="seragam-icon">🎨</span>
+                    <span class="seragam-label">Batik Abu-abu</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- JADWAL PIKET -->
+        <div class="form-card">
+            <h3>🧹 Jadwal Piket</h3>
+            <label class="toggle-row" id="piketToggle">
+                <input type="checkbox" id="piketCheckbox" onchange="toggleSection('piket')">
+                <span class="toggle-text">Sertakan Jadwal Piket di pesan</span>
+            </label>
+            <div class="info-preview" id="piketPreview">
+                <div class="day-badge" id="piketDayBadge">Senin</div>
+                <div class="piket-names" id="piketNames"></div>
+            </div>
+        </div>
+
+        <!-- JADWAL KELAS PAGI X RPL -->
+        <div class="form-card" id="rplCard" style="display:none;">
+            <h3>🟦 Kelas Pagi — X RPL</h3>
+            <div class="info-preview show" id="rplPreview">
+                <div class="day-badge rpl" id="rplDayBadge">Senin — X RPL</div>
+                <table class="roster-table rpl-table" id="rplTable">
+                    <thead><tr><th>Jam</th><th>Mata Pelajaran</th></tr></thead>
+                    <tbody id="rplTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- JADWAL PELAJARAN SIANG -->
+        <div class="form-card">
+            <h3>📚 Jadwal Pelajaran Siang</h3>
+            <label class="toggle-row" id="rosterToggle">
+                <input type="checkbox" id="rosterCheckbox" onchange="toggleSection('roster')" checked>
+                <span class="toggle-text">Sertakan Jadwal Pelajaran Siang di pesan</span>
+            </label>
+            <div class="info-preview show" id="rosterPreview">
+                <div class="day-badge" id="rosterDayBadge">Senin</div>
+                <table class="roster-table" id="rosterTable">
+                    <thead><tr><th>Jam</th><th>Mata Pelajaran</th></tr></thead>
+                    <tbody id="rosterTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TUGAS -->
+        <div class="form-card">
+            <h3>📝 Tugas untuk Siswa</h3>
+            <div id="tasksContainer"></div>
+            <button class="btn-add-task" onclick="addTask()">➕ Tambah Tugas Lain</button>
+        </div>
+
+        <!-- INFO PENTING -->
+        <div class="form-card">
+            <h3>📢 Informasi Penting</h3>
+            <div class="task-section">
+                <label>Pesan / Pengumuman</label>
+                <textarea class="info-textarea" id="infoPenting" rows="3" placeholder="Contoh: Besok upacara wajib bawa topi, jangan terlambat!"></textarea>
+            </div>
+        </div>
+
+        <button class="btn-copy" id="btnCopy" onclick="copyMessage()">
+            <span id="btnCopyText">📋 Salin Teks Pesan</span>
+        </button>
+
+        <div class="preview-box" id="previewBox">
+            <div class="preview-label">📱 Preview Pesan WhatsApp:</div>
+            <span id="previewText"></span>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastIcon">✅</span>
+        <span id="toastMsg">Teks berhasil disalin!</span>
+    </div>
+
+    <script>
+        // === DATA USERS ===
+        const validUsers = {
+            'tania1212@gmail.com': { pass: 'tania1010', name: 'Tania', role: 'sekretaris', theme: 'light' },
+            'rahel1313@gmail.com': { pass: 'rahel2020', name: 'Rahel', role: 'sekretaris', theme: 'light' },
+            'samuel@gmail.com': { pass: 'samuel1111', name: 'Samuel', role: 'admin', theme: 'dark' }
+        };
+
+        const allMapels = [
+            'B. Indonesia', 'B. Inggris', 'B. Mandarin', 'Sejarah', 'Seni Musik',
+            'Matematika', 'P. Pancasila', 'Agama', 'Budaya Karakter',
+            'Bisnis Digital', 'Informatika', 'PJOK', 'IPAS', 'Dasar RPL'
+        ];
+
+        const jadwalPiket = {
+            'Senin': ['Aditya', 'Alvin', 'Banyu', 'Felix', 'Louis', 'Nabila'],
+            'Selasa': ['Albert', 'Alvino', 'Dafa Arya', 'Ghali', 'Alrafi', 'Samuel'],
+            'Rabu': ['Aldric', 'Amal', 'Dafa Sanjaya', 'Jasper', 'Tania', 'Fadim'],
+            'Kamis': ['Alkhalifi', 'Dhani', 'Axel', 'Nasfin', 'Wafi'],
+            'Jumat': ['Aulia', 'Ezra', 'Satis', 'Rahel', 'Saren'],
+            'Sabtu': ['Wilie', 'Jonea', 'Joel', 'Teuku Salwan', 'Nikolas'],
+            'Minggu': []
+        };
+
+        const jadwalRPL = {
+            'Senin': [
+                { jam: '08.00–08.40', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '08.40–09.20', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '09.20–10.00', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '10.00–10.20', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '10.20–11.00', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '11.00–11.35', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '11.35–12.05', mapel: 'Dasar RPL', type: 'normal' }
+            ],
+            'Kamis': [
+                { jam: '08.00–08.40', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '08.40–09.20', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '09.20–10.00', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '10.00–10.20', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '10.20–11.00', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '11.00–11.35', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '11.35–12.05', mapel: 'Dasar RPL', type: 'normal' },
+                { jam: '12.05–12.40', mapel: '❌ Tidak ada jadwal X RPL', type: 'no-jadwal' }
+            ]
+        };
+
+        const jadwalPelajaran = {
+            'Senin': [
+                { jam: '13.15–13.55', mapel: 'B. Inggris', type: 'normal' },
+                { jam: '13.55–14.35', mapel: 'B. Inggris', type: 'normal' },
+                { jam: '14.35–15.15', mapel: 'B. Inggris', type: 'normal' },
+                { jam: '15.15–15.50', mapel: 'B. Inggris', type: 'normal' },
+                { jam: '15.50–16.10', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '16.10–16.45', mapel: 'Budaya Karakter', type: 'normal' },
+                { jam: '16.45–17.20', mapel: 'B. Mandarin', type: 'normal' },
+                { jam: '17.20–18.00', mapel: 'B. Mandarin', type: 'normal' }
+            ],
+            'Selasa': [
+                { jam: '13.15–13.55', mapel: 'B. Indonesia', type: 'normal' },
+                { jam: '13.55–14.35', mapel: 'B. Indonesia', type: 'normal' },
+                { jam: '14.35–15.15', mapel: 'Agama', type: 'normal' },
+                { jam: '15.15–15.50', mapel: 'Agama', type: 'normal' },
+                { jam: '15.50–16.10', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '16.10–16.45', mapel: 'Informatika', type: 'normal' },
+                { jam: '16.45–17.20', mapel: 'Informatika', type: 'normal' },
+                { jam: '17.20–18.00', mapel: 'Informatika', type: 'normal' }
+            ],
+            'Rabu': [
+                { jam: '13.15–13.55', mapel: 'IPAS', type: 'normal' },
+                { jam: '13.55–14.35', mapel: 'IPAS', type: 'normal' },
+                { jam: '14.35–15.15', mapel: 'IPAS', type: 'normal' },
+                { jam: '15.15–15.50', mapel: 'Sejarah', type: 'normal' },
+                { jam: '15.50–16.10', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '16.10–16.45', mapel: 'Sejarah', type: 'normal' },
+                { jam: '16.45–17.20', mapel: 'P. Pancasila', type: 'normal' },
+                { jam: '17.20–18.00', mapel: 'P. Pancasila', type: 'normal' }
+            ],
+            'Kamis': [
+                { jam: '13.15–13.55', mapel: 'Matematika', type: 'normal' },
+                { jam: '13.55–14.35', mapel: 'Matematika', type: 'normal' },
+                { jam: '14.35–15.15', mapel: 'Matematika', type: 'normal' },
+                { jam: '15.15–15.50', mapel: 'Matematika', type: 'normal' },
+                { jam: '15.50–16.10', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '16.10–16.45', mapel: 'Seni Musik', type: 'normal' },
+                { jam: '16.45–17.20', mapel: 'Seni Musik', type: 'normal' },
+                { jam: '17.20–18.00', mapel: 'Informatika', type: 'normal' }
+            ],
+            'Jumat': [
+                { jam: '13.30–14.10', mapel: 'IPAS', type: 'normal' },
+                { jam: '14.10–14.50', mapel: 'IPAS', type: 'normal' },
+                { jam: '14.50–15.25', mapel: 'Bisnis Digital', type: 'normal' },
+                { jam: '15.25–16.00', mapel: 'Bisnis Digital', type: 'normal' },
+                { jam: '16.00–16.20', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '16.20–16.50', mapel: '🏠 PULANG', type: 'pulang' },
+                { jam: '16.50–17.25', mapel: '🏠 PULANG', type: 'pulang' },
+                { jam: '17.25–18.00', mapel: '🏠 PULANG', type: 'pulang' }
+            ],
+            'Sabtu': [
+                { jam: '12.45–13.20', mapel: 'PJOK', type: 'normal' },
+                { jam: '13.20–14.00', mapel: 'PJOK', type: 'normal' },
+                { jam: '14.00–14.35', mapel: 'PJOK', type: 'normal' },
+                { jam: '14.35–15.10', mapel: 'B. Indonesia', type: 'normal' },
+                { jam: '15.10–15.30', mapel: '☕ ISTIRAHAT', type: 'istirahat' },
+                { jam: '15.30–16.05', mapel: 'B. Indonesia', type: 'normal' },
+                { jam: '16.05–16.40', mapel: '🏠 PULANG', type: 'pulang' },
+                { jam: '16.40–17.15', mapel: '🏠 PULANG', type: 'pulang' }
+            ],
+            'Minggu': []
+        };
+
+        const emojiMap = {
+            'B. Indonesia': '📖', 'B. Inggris': '🔤', 'B. Mandarin': '🏮',
+            'Sejarah': '📜', 'Seni Musik': '🎵', 'Matematika': '📐',
+            'P. Pancasila': '🏛️', 'Agama': '📿', 'Budaya Karakter': '🤝',
+            'Bisnis Digital': '💼', 'Informatika': '💻', 'PJOK': '🏃', 
+            'IPAS': '🔬', 'Dasar RPL': '🖥️'
+        };
+
+        const seragamEmojiMap = {
+            'Putih Putih': '🤍', 'Putih Abu-abu': '🩶', 'Olahraga': '🏃',
+            'Pramuka': '⚜️', 'Batik Abu-abu': '🎨'
+        };
+
+        let taskCount = 0;
+        let currentUser = null;
+
+        // === HELPERS ===
+        function getToday() { const now = new Date(); now.setHours(0,0,0,0); return now; }
+        function formatDateYMD(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+        function parseDateInput(v) { const [y,m,d] = v.split('-').map(Number); return new Date(y,m-1,d); }
+        function formatDateIndo(d) {
+            const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+        function getDayName(d) { return ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][d.getDay()]; }
+        function getDayLabel(d) {
+            const diff = Math.round((d.getTime()-getToday().getTime())/(864e5));
+            if (diff===0) return 'HARI INI'; if (diff===1) return 'BESOK'; if (diff===2) return 'LUSA';
+            return `HARI ${getDayName(d).toUpperCase()}`;
+        }
+        function isRPLDay(dayName) { return dayName === 'Senin' || dayName === 'Kamis'; }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') document.body.classList.add('dark-theme');
+            else document.body.classList.remove('dark-theme');
+        }
+
+        // === SERAGAM UTAMA (Radio - Pilih 1) ===
+        function selectSeragamUtama(el) {
+            document.querySelectorAll('#seragamUtamaGrid .seragam-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+        }
+
+        // === SERAGAM TAMBAHAN (Checkbox - Multi Select) ===
+        function toggleSeragamTambahan(el) {
+            const cb = el.querySelector('input');
+            cb.checked = !cb.checked;
+            el.classList.toggle('selected', cb.checked);
+        }
+
+        function getSelectedSeragam() {
+            const utama = document.querySelector('input[name="seragam_utama"]:checked');
+            return utama ? utama.value : '';
+        }
+
+        function getSelectedSeragamTambahan() {
+            const checkboxes = document.querySelectorAll('input[name="seragam_tambahan"]:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // === INIT ===
+        window.addEventListener('DOMContentLoaded', () => {
+            initDateInput();
+            addTask();
+            checkSession();
+            updateAllPreviews();
+        });
+
+        function initDateInput() {
+            const input = document.getElementById('selectedDate');
+            const today = getToday();
+            input.min = formatDateYMD(today);
+            const tmr = new Date(today); tmr.setDate(tmr.getDate()+1);
+            input.value = formatDateYMD(tmr);
+            input.addEventListener('change', function() {
+                if (this.value && this.value < this.min) {
+                    showToast('⚠️ Tidak bisa memilih tanggal yang sudah lewat!', true);
+                    this.value = this.min;
+                }
+                updateHeaderDate();
+                updateAllPreviews();
+            });
+            updateHeaderDate();
+        }
+
+        function updateHeaderDate() {
+            const v = document.getElementById('selectedDate').value;
+            if (!v) return;
+            document.getElementById('currentDate').textContent = `📅 ${formatDateIndo(parseDateInput(v))}`;
+        }
+
+        function toggleSection(type) {
+            const cb = document.getElementById(type + 'Checkbox');
+            const toggle = document.getElementById(type + 'Toggle');
+            const preview = document.getElementById(type + 'Preview');
+            toggle.classList.toggle('active', cb.checked);
+            if (cb.checked) { preview.classList.add('show'); updateAllPreviews(); }
+            else { preview.classList.remove('show'); }
+        }
+
+        function updateAllPreviews() {
+            const dateValue = document.getElementById('selectedDate').value;
+            if (!dateValue) return;
+            const selectedDate = parseDateInput(dateValue);
+            const dayName = getDayName(selectedDate);
+            const timeInput = document.getElementById('schoolTime');
+            const rplBanner = document.getElementById('rplBanner');
+            const rplCard = document.getElementById('rplCard');
+
+            if (isRPLDay(dayName)) {
+                rplBanner.classList.add('show');
+                rplCard.style.display = 'block';
+                updateRPLPreview(dayName);
+            } else {
+                rplBanner.classList.remove('show');
+                rplCard.style.display = 'none';
+            }
+
+            timeInput.disabled = false;
+            updatePiketPreview(dayName);
+            updateRosterPreview(dayName);
+        }
+
+        function updateRPLPreview(dayName) {
+            const badge = document.getElementById('rplDayBadge');
+            const tbody = document.getElementById('rplTableBody');
+            const schedule = jadwalRPL[dayName] || [];
+            badge.textContent = `🟦 ${dayName} — X RPL`;
+            tbody.innerHTML = '';
+            schedule.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = item.type;
+                if (item.type === 'istirahat' || item.type === 'no-jadwal') {
+                    tr.innerHTML = `<td colspan="2">${item.mapel}</td>`;
+                } else {
+                    const emoji = emojiMap[item.mapel] || '📘';
+                    tr.innerHTML = `<td>${item.jam}</td><td>${emoji} ${item.mapel}</td>`;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updatePiketPreview(dayName) {
+            const badge = document.getElementById('piketDayBadge');
+            const namesContainer = document.getElementById('piketNames');
+            const names = jadwalPiket[dayName] || [];
+            badge.textContent = `📅 Piket ${dayName}`;
+            namesContainer.innerHTML = '';
+            if (names.length === 0) {
+                namesContainer.innerHTML = '<span class="empty-msg">Tidak ada piket hari ini (Minggu/libur)</span>';
+            } else {
+                names.forEach(name => {
+                    const tag = document.createElement('span');
+                    tag.className = 'piket-name-tag';
+                    tag.textContent = `👤 ${name}`;
+                    namesContainer.appendChild(tag);
+                });
+            }
+        }
+
+        function updateRosterPreview(dayName) {
+            const badge = document.getElementById('rosterDayBadge');
+            const tbody = document.getElementById('rosterTableBody');
+            const schedule = jadwalPelajaran[dayName] || [];
+            badge.textContent = `📅 Jadwal Siang ${dayName}`;
+            tbody.innerHTML = '';
+            if (schedule.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:20px;color:var(--text-light);font-style:italic;">Tidak ada jadwal (Minggu/libur)</td></tr>';
+                return;
+            }
+            schedule.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = item.type;
+                if (item.type === 'istirahat' || item.type === 'pulang') {
+                    tr.innerHTML = `<td colspan="2">${item.mapel}</td>`;
+                } else {
+                    const emoji = emojiMap[item.mapel] || '📘';
+                    tr.innerHTML = `<td>${item.jam}</td><td>${emoji} ${item.mapel}</td>`;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addTask() {
+            taskCount++;
+            const c = document.getElementById('tasksContainer');
+            const d = document.createElement('div'); d.className = 'task-card';
+            let mapelOptions = '<option value="">-- Pilih Mapel --</option>';
+            allMapels.forEach(m => { mapelOptions += `<option value="${m}">${m}</option>`; });
+            d.innerHTML = `<div class="task-header"><div class="task-number">${taskCount}</div><button class="btn-remove-task" onclick="removeTask(this)">🗑️</button></div>
+                <div class="task-row"><label>Mata Pelajaran</label><select class="task-mapel">${mapelOptions}</select></div>
+                <div class="task-row"><label>Detail Tugas</label><textarea class="task-textarea" rows="2" placeholder="Tulis detail tugas..."></textarea></div>`;
+            c.appendChild(d); updateRemoveButtons();
+        }
+
+        function removeTask(btn) {
+            if (document.querySelectorAll('.task-card').length <= 1) { showToast('⚠️ Minimal harus ada 1 tugas!', true); return; }
+            btn.closest('.task-card').style.animation = 'fadeOut 0.3s ease forwards';
+            setTimeout(() => { btn.closest('.task-card').remove(); renumberTasks(); updateRemoveButtons(); }, 300);
+        }
+
+        function renumberTasks() { document.querySelectorAll('.task-card').forEach((c,i) => c.querySelector('.task-number').textContent = i+1); }
+        function updateRemoveButtons() {
+            const n = document.querySelectorAll('.task-card').length;
+            document.querySelectorAll('.btn-remove-task').forEach(b => b.style.display = n > 1 ? 'flex' : 'none');
+        }
+
+        // === AUTH ===
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const user = validUsers[email];
+            if (user && user.pass === document.getElementById('password').value) {
+                currentUser = user;
+                sessionStorage.setItem('sekretaris_logged', 'true');
+                sessionStorage.setItem('sekretaris_name', user.name);
+                sessionStorage.setItem('sekretaris_role', user.role);
+                sessionStorage.setItem('sekretaris_theme', user.theme);
+                applyTheme(user.theme);
+                showDashboard();
+            } else {
+                const err = document.getElementById('errorMsg'); err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+            }
+        }
+
+        function checkSession() {
+            if (sessionStorage.getItem('sekretaris_logged') === 'true') {
+                const name = sessionStorage.getItem('sekretaris_name') || 'User';
+                const role = sessionStorage.getItem('sekretaris_role') || 'sekretaris';
+                const theme = sessionStorage.getItem('sekretaris_theme') || 'light';
+                currentUser = { name, role, theme };
+                applyTheme(theme);
+                showDashboard();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            const name = currentUser?.name || 'User';
+            const role = currentUser?.role || 'sekretaris';
+            if (role === 'admin') {
+                document.getElementById('greetingText').textContent = `🛡️ Selamat datang Admin ${name}`;
+            } else {
+                document.getElementById('greetingText').textContent = `👋 Halo, ${name}!`;
+            }
+            document.getElementById('rosterToggle').classList.add('active');
+        }
+
+        function logout() { sessionStorage.clear(); location.reload(); }
+
+        // === GENERATE MESSAGE ===
+        function generateMessage() {
+            const dateValue = document.getElementById('selectedDate').value;
+            if (!dateValue) { showToast('⚠️ Pilih tanggal terlebih dahulu!', true); return null; }
+
+            const selectedDate = parseDateInput(dateValue);
+            const dateStr = formatDateIndo(selectedDate);
+            const dayLabel = getDayLabel(selectedDate);
+            const schoolTime = document.getElementById('schoolTime').value;
+            const dayName = getDayName(selectedDate);
+            const hasRPL = isRPLDay(dayName);
+            const seragamUtama = getSelectedSeragam();
+            const seragamTambahan = getSelectedSeragamTambahan();
+            
+            const includePiket = document.getElementById('piketCheckbox').checked;
+            const includeRoster = document.getElementById('rosterCheckbox').checked;
+            const piketNames = jadwalPiket[dayName] || [];
+            const rplSchedule = hasRPL ? (jadwalRPL[dayName] || []) : [];
+            const siangSchedule = jadwalPelajaran[dayName] || [];
+
+            const validTasks = [];
+            document.querySelectorAll('.task-card').forEach(card => {
+                const m = card.querySelector('.task-mapel').value;
+                const d = card.querySelector('.task-textarea').value.trim();
+                if (m && d) validTasks.push({ mapel: m, detail: d });
+            });
+
+            const infoPenting = document.getElementById('infoPenting').value.trim();
+
+            if (!includePiket && !hasRPL && (!includeRoster || siangSchedule.length === 0) && validTasks.length === 0 && !infoPenting && !seragamUtama && seragamTambahan.length === 0) {
+                showToast('⚠️ Isi minimal satu bagian!', true); return null;
+            }
+
+            let msg = `━━━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `    📢 *INFORMASI KELAS*\n`;
+            msg += `    📅 _${dateStr}_\n`;
+            if (schoolTime) msg += `    ⏰ Jam Masuk: *${schoolTime}*\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            // SERAGAM UTAMA
+            if (seragamUtama) {
+                const sEmoji = seragamEmojiMap[seragamUtama] || '👔';
+                msg += `👔 *SERAGAM BESOK*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                msg += `   ${sEmoji} *${seragamUtama}*\n`;
+                msg += `   ⚠️ _Dipakai dari rumah!_\n`;
+
+                // SERAGAM TAMBAHAN
+                if (seragamTambahan.length > 0) {
+                    msg += `\n   👜 *Seragam Tambahan (Dibawa):*\n`;
+                    seragamTambahan.forEach(s => {
+                        const em = seragamEmojiMap[s] || '👔';
+                        msg += `      • ${em} ${s}\n`;
+                    });
+                }
+                msg += `\n`;
+            } else if (seragamTambahan.length > 0) {
+                // Hanya tambahan tanpa utama
+                msg += `👜 *SERAGAM TAMBAHAN (Dibawa)*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                seragamTambahan.forEach(s => {
+                    const em = seragamEmojiMap[s] || '👔';
+                    msg += `   • ${em} ${s}\n`;
+                });
+                msg += `\n`;
+            }
+
+            // PIKET
+            if (includePiket && piketNames.length > 0) {
+                msg += `🧹 *PIKET ${dayName.toUpperCase()}*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                piketNames.forEach((name, i) => msg += `   ${i+1}. 👤 ${name}\n`);
+                msg += `\n`;
+            }
+
+            // KELAS PAGI X RPL
+            if (hasRPL && rplSchedule.length > 0) {
+                msg += `🟦 *KELAS PAGI — X RPL*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                rplSchedule.forEach(item => {
+                    if (item.type === 'istirahat') msg += `   ☕ _${item.jam} │ ISTIRAHAT_\n`;
+                    else if (item.type === 'no-jadwal') msg += `   ❌ _${item.jam} │ Tidak ada jadwal X RPL_\n`;
+                    else { const em = emojiMap[item.mapel] || '📘'; msg += `   🕐 ${item.jam} │ ${em} ${item.mapel}\n`; }
+                });
+                msg += `\n`;
+            }
+
+            // JADWAL SIANG
+            if (includeRoster && siangSchedule.length > 0) {
+                msg += `📚 *JADWAL PELAJARAN SIANG ${dayLabel}*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                siangSchedule.forEach(item => {
+                    if (item.type === 'istirahat') msg += `   ☕ _${item.jam} │ ISTIRAHAT_\n`;
+                    else if (item.type === 'pulang') msg += `   🏠 _${item.jam} │ PULANG_\n`;
+                    else { const em = emojiMap[item.mapel] || '📘'; msg += `   🕐 ${item.jam} │ ${em} ${item.mapel}\n`; }
+                });
+                msg += `\n`;
+            }
+
+            // TASKS
+            if (validTasks.length > 0) {
+                msg += `📝 *TUGAS UNTUK SISWA*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                validTasks.forEach((t, i) => {
+                    const em = emojiMap[t.mapel] || '📘';
+                    msg += `   ${i+1}. ${em} *${t.mapel}*\n`;
+                    msg += `      ↳ ${t.detail}\n`;
+                    if (i < validTasks.length - 1) msg += `\n`;
+                });
+                msg += `\n`;
+            }
+
+            // INFO
+            if (infoPenting) {
+                msg += `⚠️ *PENGUMUMAN PENTING*\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                msg += `   📌 ${infoPenting}\n\n`;
+            }
+
+            msg += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `   💪 Tetap semangat belajar! 💪\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━━━`;
+
+            return msg;
+        }
+
+        function copyMessage() {
+            const msg = generateMessage();
+            if (!msg) return;
+            document.getElementById('previewText').textContent = msg;
+            document.getElementById('previewBox').style.display = 'block';
+
+            navigator.clipboard.writeText(msg).then(() => {
+                const btn = document.getElementById('btnCopy');
+                const txt = document.getElementById('btnCopyText');
+                btn.classList.add('copied'); txt.textContent = '✅ Tersalin!';
+                showToast('Teks berhasil disalin! Silakan paste di grup WA 📋');
+                setTimeout(() => { btn.classList.remove('copied'); txt.textContent = '📋 Salin Teks Pesan'; }, 2500);
+            }).catch(() => {
+                const ta = document.createElement('textarea'); ta.value = msg;
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+                showToast('Teks berhasil disalin! Silakan paste di grup WA 📋');
+            });
+        }
+
+        function showToast(message, isError = false) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = message;
+            document.getElementById('toastIcon').textContent = isError ? '⚠️' : '✅';
+            t.style.borderLeft = isError ? '4px solid var(--danger)' : '4px solid var(--success)';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
