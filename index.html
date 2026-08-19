@@ -1,856 +1,2124 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SXA Store - Masuk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --gold-50: #fdfcf8;
-            --gold-100: #f9f5e8;
-            --gold-200: #f0e6c8;
-            --gold-300: #e5d4a1;
-            --gold-400: #d4af37;
-            --gold-500: #c5a028;
-            --gold-600: #b8941e;
-            --gold-700: #8b6914;
-            --gold-800: #5c4510;
-            --gold-900: #3d2e0a;
-            --white: #ffffff;
-            --text-dark: #2c2416;
-            --text-muted: #7a6e55;
-            --border: #e8dcc8;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #fdfcf8 0%, #f5ecd0 50%, #f0e6c8 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow-y: auto;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(1deg); }
-            66% { transform: translate(-20px, 20px) rotate(-1deg); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 900px;
-            min-height: 600px;
-            display: flex;
-            background: var(--white);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 80px rgba(139, 105, 20, 0.15), 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .welcome-side {
-            flex: 1;
-            background: linear-gradient(135deg, var(--gold-700) 0%, var(--gold-800) 100%);
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            color: var(--white);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-side::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .welcome-side::after {
-            content: '';
-            position: absolute;
-            bottom: -150px;
-            left: -150px;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .brand {
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        .brand-logo span {
-            color: var(--gold-300);
-        }
-
-        .brand-tagline {
-            font-size: 0.9rem;
-            opacity: 0.85;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        .welcome-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .welcome-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.4rem;
-            margin-bottom: 16px;
-            line-height: 1.2;
-            font-weight: 600;
-        }
-
-        .welcome-content p {
-            font-size: 1rem;
-            opacity: 0.9;
-            line-height: 1.7;
-            font-weight: 300;
-        }
-
-        .welcome-footer {
-            position: relative;
-            z-index: 1;
-            font-size: 0.8rem;
-            opacity: 0.7;
-            font-weight: 300;
-        }
-
-        .form-side {
-            flex: 1.2;
-            padding: 60px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .form-header {
-            margin-bottom: 40px;
-        }
-
-        .form-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .form-header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            font-weight: 300;
-        }
-
-        .tab-group {
-            display: flex;
-            gap: 0;
-            margin-bottom: 35px;
-            background: var(--gold-50);
-            border-radius: 12px;
-            padding: 5px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            background: transparent;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .tab-btn.active {
-            background: var(--white);
-            color: var(--gold-700);
-            box-shadow: 0 2px 12px rgba(139, 105, 20, 0.12);
-        }
-
-        .tab-btn.highlight {
-            animation: pulseGold 1.8s ease-in-out infinite;
-            color: var(--gold-700);
-            font-weight: 700;
-        }
-
-        @keyframes pulseGold {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); transform: scale(1); }
-            50% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0.15); transform: scale(1.03); }
-        }
-
-        .form-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .form-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
-        }
-
-        @keyframes successIn {
-            from { opacity: 0; transform: translateY(-8px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .auth-success {
-            color: #14532d;
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            padding: 14px 18px;
-            border-radius: 12px;
-            margin-bottom: 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-align: center;
-            animation: successIn 0.5s ease;
-        }
-
-        .input-group {
-            margin-bottom: 22px;
-            position: relative;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            letter-spacing: 0.3px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            background: var(--white);
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: var(--gold-400);
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
-        }
-
-        .input-group input::placeholder {
-            color: #c4b896;
-            font-weight: 300;
-        }
-
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--gold-400);
-            cursor: pointer;
-        }
-
-        .forgot-password {
-            font-size: 0.9rem;
-            color: var(--gold-600);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .forgot-password:hover {
-            color: var(--gold-700);
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 15px 24px;
-            background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-600) 100%);
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(197, 160, 40, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 28px 0;
-            gap: 15px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .divider span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .social-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-social {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            background: var(--white);
-            border-radius: 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-social:hover {
-            border-color: var(--gold-300);
-            background: var(--gold-50);
-            transform: translateY(-1px);
-        }
-
-        .btn-social svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .footer-text a {
-            color: var(--gold-600);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .footer-text a:hover {
-            color: var(--gold-700);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                align-items: flex-start;
-                padding-top: 20px;
-                padding-bottom: 40px;
-            }
-
-            .container {
-                flex-direction: column;
-                max-width: 500px;
-                min-height: auto;
-            }
-
-            .welcome-side {
-                padding: 30px 24px;
-                min-height: auto;
-            }
-
-            .welcome-content h2 {
-                font-size: 1.6rem;
-            }
-
-            .welcome-content p {
-                font-size: 0.9rem;
-            }
-
-            .form-side {
-                padding: 30px 24px;
-            }
-
-            .form-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .btn-primary {
-                padding: 14px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-                padding-bottom: 30px;
-            }
-
-            .container {
-                border-radius: 20px;
-            }
-
-            .welcome-side {
-                padding: 24px 18px;
-            }
-
-            .brand-logo {
-                font-size: 1.6rem;
-            }
-
-            .welcome-content h2 {
-                font-size: 1.3rem;
-            }
-
-            .welcome-content p {
-                font-size: 0.85rem;
-            }
-
-            .form-side {
-                padding: 24px 18px;
-            }
-
-            .form-header h1 {
-                font-size: 1.3rem;
-            }
-
-            .tab-btn {
-                font-size: 0.85rem;
-                padding: 10px 14px;
-            }
-
-            .input-group input {
-                padding: 12px 14px;
-                font-size: 0.9rem;
-            }
-
-            .btn-primary {
-                padding: 13px 18px;
-                font-size: 0.95rem;
-            }
-
-            .social-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoomChat P2P</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b1020;
+    color:white;
+    min-height:100vh;
+}
+
+/* LOGIN */
+
+#loginPage{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at top left,#263b88 0,#11172b 40%,#080b14 100%);
+}
+
+.login-box{
+    width:100%;
+    max-width:430px;
+    background:rgba(20,27,48,.94);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:25px;
+    padding:35px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.logo{
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    background:linear-gradient(135deg,#5865f2,#7c4dff);
+    box-shadow:0 10px 30px rgba(88,101,242,.35);
+}
+
+.login-box h1{
+    text-align:center;
+    margin-top:18px;
+    font-size:28px;
+}
+
+.login-box p{
+    text-align:center;
+    color:#9da6c0;
+    margin:10px 0 25px;
+    line-height:1.5;
+}
+
+.input{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    background:#0c1222;
+    border:1px solid #293451;
+    border-radius:12px;
+    color:white;
+    outline:none;
+    font-size:15px;
+}
+
+.input:focus{
+    border-color:#6574ff;
+}
+
+.join-btn{
+    width:100%;
+    margin-top:18px;
+    border:0;
+    border-radius:12px;
+    padding:15px;
+    background:linear-gradient(135deg,#5865f2,#7c4dff);
+    color:white;
+    font-weight:bold;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.join-btn:hover{
+    opacity:.9;
+}
+
+/* CHAT */
+
+#chatPage{
+    display:none;
+    height:100vh;
+    overflow:hidden;
+}
+
+.app{
+    height:100vh;
+    display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:280px;
+    background:#11172a;
+    border-right:1px solid #252e46;
+    display:flex;
+    flex-direction:column;
+}
+
+.brand{
+    padding:22px;
+    border-bottom:1px solid #252e46;
+}
+
+.brand h2{
+    font-size:20px;
+}
+
+.room{
+    margin-top:8px;
+    color:#929bb5;
+    font-size:13px;
+    word-break:break-all;
+}
+
+.members-title{
+    padding:18px 20px 10px;
+    font-size:12px;
+    color:#7f89a5;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+#members{
+    padding:0 12px;
+    overflow:auto;
+}
+
+.member{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:5px;
+}
+
+.member:hover{
+    background:#1b2339;
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#5865f2,#7c4dff);
+    font-weight:bold;
+}
+
+.member-info{
+    min-width:0;
+}
+
+.member-name{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.online{
+    color:#53e38b;
+    font-size:11px;
+}
+
+.sidebar-bottom{
+    margin-top:auto;
+    padding:15px;
+    border-top:1px solid #252e46;
+}
+
+.my-name{
+    color:#9da6c0;
+    font-size:13px;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.header{
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    background:#11172a;
+    border-bottom:1px solid #252e46;
+}
+
+.header-left h3{
+    font-size:17px;
+}
+
+.connection{
+    font-size:12px;
+    margin-top:5px;
+    color:#ffcc66;
+}
+
+.header-actions button{
+    background:#202a43;
+    color:white;
+    border:1px solid #34405e;
+    padding:9px 12px;
+    border-radius:9px;
+    cursor:pointer;
+}
+
+/* MESSAGES */
+
+#messages{
+    flex:1;
+    overflow-y:auto;
+    padding:25px;
+    background:
+        radial-gradient(circle at 80% 20%,rgba(65,80,180,.08),transparent 30%),
+        #0b1020;
+}
+
+.system{
+    text-align:center;
+    color:#77819e;
+    font-size:12px;
+    margin:12px 0;
+}
+
+.message-row{
+    display:flex;
+    margin-bottom:15px;
+}
+
+.message-row.mine{
+    justify-content:flex-end;
+}
+
+.message{
+    max-width:min(75%,600px);
+    padding:11px 14px;
+    border-radius:16px;
+    background:#19233a;
+    border:1px solid #283553;
+}
+
+.mine .message{
+    background:linear-gradient(135deg,#4d5de5,#6744c7);
+    border:none;
+}
+
+.sender{
+    font-size:11px;
+    color:#8f9ab8;
+    margin-bottom:5px;
+}
+
+.mine .sender{
+    color:#dddfff;
+}
+
+.message-text{
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:1.45;
+}
+
+.time{
+    font-size:9px;
+    color:#aeb7cc;
+    text-align:right;
+    margin-top:5px;
+}
+
+/* FILE */
+
+.file-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:rgba(0,0,0,.18);
+    border-radius:12px;
+    padding:12px;
+    min-width:220px;
+}
+
+.file-icon{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.12);
+    border-radius:10px;
+    font-size:20px;
+}
+
+.file-info{
+    flex:1;
+    min-width:0;
+}
+
+.file-name{
+    font-size:13px;
+    word-break:break-all;
+}
+
+.file-size{
+    color:#adb5c8;
+    font-size:10px;
+    margin-top:3px;
+}
+
+.download-btn{
+    border:0;
+    background:white;
+    color:#222;
+    padding:7px 9px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* INPUT */
+
+.composer{
+    padding:15px;
+    background:#11172a;
+    border-top:1px solid #252e46;
+}
+
+.composer-inner{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    background:#0b1020;
+    border:1px solid #293451;
+    border-radius:15px;
+    padding:8px;
+}
+
+.icon-btn{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:10px;
+    background:#202a43;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+    flex-shrink:0;
+}
+
+#messageInput{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:white;
+    padding:10px;
+    font-size:15px;
+}
+
+.send-btn{
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:11px;
+    background:#5865f2;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+}
+
+#fileInput{
+    display:none;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .header{
+        height:64px;
+        padding:0 14px;
+    }
+
+    #messages{
+        padding:15px;
+    }
+
+    .message{
+        max-width:85%;
+    }
+
+    .composer{
+        padding:9px;
+    }
+
+    .login-box{
+        padding:25px;
+    }
+}
+
+/* NOTIFICATION */
+
+.toast{
+    position:fixed;
+    bottom:90px;
+    right:20px;
+    background:#202a43;
+    border:1px solid #394766;
+    color:white;
+    padding:12px 16px;
+    border-radius:12px;
+    opacity:0;
+    transform:translateY(15px);
+    pointer-events:none;
+    transition:.3s;
+    z-index:999;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="welcome-side">
-            <div class="brand">
-                <div class="brand-logo">SXA <span>STORE</span></div>
-                <div class="brand-tagline">Premium Shopping Experience</div>
-            </div>
-            <div class="welcome-content">
-                <h2>Selamat Datang Kembali</h2>
-                <p>Masuk ke akun Anda untuk menikmati koleksi produk premium kami dengan pengalaman berbelanja yang tak tertandingi.</p>
-            </div>
-            <div class="welcome-footer">
-                &copy; 2026 SXA Store. All rights reserved.
-            </div>
-        </div>
 
-        <div class="form-side">
-            <div class="form-header">
-                <h1 id="form-title">Masuk ke Akun</h1>
-                <p id="form-subtitle">Selamat datang! Silakan masuk untuk melanjutkan.</p>
-            </div>
+<!-- LOGIN -->
 
-            <div class="tab-group">
-                <button class="tab-btn active" onclick="switchTab('login')">Masuk</button>
-                <button class="tab-btn" onclick="switchTab('register')">Daftar</button>
-            </div>
+<section id="loginPage">
 
-            <form id="login-form" class="form-content active" onsubmit="handleLogin(event)">
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="nama@email.com" required>
-                </div>
-                <div class="input-group">
-                    <label>Kata Sandi</label>
-                    <input type="password" placeholder="Masukkan kata sandi" required>
-                </div>
-                <div class="form-row">
-                    <label class="remember-me">
-                        <input type="checkbox" name="remember">
-                        Ingat saya
-                    </label>
-                    <a href="#" class="forgot-password">Lupa kata sandi?</a>
-                </div>
-                <button type="submit" class="btn-primary">Masuk Sekarang</button>
-                <div class="divider">
-                    <span>atau</span>
-                </div>
-                <div class="social-buttons">
-                    <button type="button" class="btn-social">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.03 2.53-2.16 3.31v2.77h3.49c2.04-1.88 3.24-4.64 3.24-7.89z"/>
-                            <path d="M12 24c3.24 0 5.95-1.08 7.94-2.91l-3.49-2.77c-1.08.72-2.45 1.14-4.05 1.14-3.13 0-5.78-2.1-6.73-4.94H2.17v2.84C4.02 21.36 7.76 24 12 24z"/>
-                            <path d="M5.27 14.47c-.25-.72-.39-1.49-.39-2.28s.14-1.56.39-2.28V7.17H2.17C1.43 9.08 1 11.05 1 13s.43 3.92 1.17 5.83l3.1-2.36z"/>
-                            <path d="M12 4.76c1.77 0 3.35.61 4.59 1.8l3.44-3.44C17.94 1.18 15.23 0 12 0 7.76 0 4.02 2.64 2.17 6.17l3.1 2.36c.95-2.84 3.6-4.94 6.73-4.94z"/>
-                        </svg>
-                        Google
-                    </button>
-                    <button type="button" class="btn-social">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.095-1.695-.375-.3-1.095-.735.015-.75 1.08-.015 1.845.99 2.205 1.425 1.305 2.19 3.39 1.56 4.23 1.185.135-.93.525-1.56.96-1.92-3.36-.375-6.9-1.68-6.9-7.47 0-1.65.585-3 1.545-4.05-.15-.375-.67-1.89.15-3.93 0 0 1.26-.405 4.125 1.56 1.2-.33 2.47-.495 3.75-.495s2.55.165 3.75.495c2.865-1.965 4.125-1.56 4.125-1.56.82 2.04.3 3.555.15 3.93.96 1.05 1.545 2.4 1.545 4.05 0 5.805-3.555 7.11-6.915 7.47.54.465 1.005 1.35 1.005 2.715 0 1.965-.015 3.54-.015 4.02 0 .42.225.915.84.765C20.565 21.795 24 17.31 24 12c0-6.63-5.37-12-12-12z"/>
-                        </svg>
-                        GitHub
-                    </button>
-                </div>
-                <div class="footer-text">
-                    Belum punya akun? <a href="#" onclick="switchTab('register'); return false;">Daftar sekarang</a>
-                </div>
-            </form>
+    <div class="login-box">
 
-            <form id="register-form" class="form-content" onsubmit="handleRegister(event)">
-                <div class="input-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" placeholder="John Doe" required>
-                </div>
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="nama@email.com" required>
-                </div>
-                <div class="input-group">
-                    <label>Kata Sandi</label>
-                    <input type="password" placeholder="Minimal 8 karakter" id="reg-password" required minlength="8">
-                </div>
-                <div class="input-group">
-                    <label>Konfirmasi Kata Sandi</label>
-                    <input type="password" placeholder="Ulangi kata sandi" id="reg-confirm" required minlength="8">
-                </div>
-                <div class="form-row">
-                    <label class="remember-me">
-                        <input type="checkbox" required>
-                        Saya setuju dengan <a href="#" style="color: var(--gold-600); text-decoration: none;">Syarat & Ketentuan</a>
-                    </label>
-                </div>
-                <button type="submit" class="btn-primary">Buat Akun</button>
-                <div class="divider">
-                    <span>atau</span>
-                </div>
-                <div class="social-buttons">
-                    <button type="button" class="btn-social">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.03 2.53-2.16 3.31v2.77h3.49c2.04-1.88 3.24-4.64 3.24-7.89z"/>
-                            <path d="M12 24c3.24 0 5.95-1.08 7.94-2.91l-3.49-2.77c-1.08.72-2.45 1.14-4.05 1.14-3.13 0-5.78-2.1-6.73-4.94H2.17v2.84C4.02 21.36 7.76 24 12 24z"/>
-                            <path d="M5.27 14.47c-.25-.72-.39-1.49-.39-2.28s.14-1.56.39-2.28V7.17H2.17C1.43 9.08 1 11.05 1 13s.43 3.92 1.17 5.83l3.1-2.36z"/>
-                            <path d="M12 4.76c1.77 0 3.35.61 4.59 1.8l3.44-3.44C17.94 1.18 15.23 0 12 0 7.76 0 4.02 2.64 2.17 6.17l3.1 2.36c.95-2.84 3.6-4.94 6.73-4.94z"/>
-                        </svg>
-                        Google
-                    </button>
-                    <button type="button" class="btn-social">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.095-1.695-.375-.3-1.095-.735.015-.75 1.08-.015 1.845.99 2.205 1.425 1.305 2.19 3.39 1.56 4.23 1.185.135-.93.525-1.56.96-1.92-3.36-.375-6.9-1.68-6.9-7.47 0-1.65.585-3 1.545-4.05-.15-.375-.67-1.89.15-3.93 0 0 1.26-.405 4.125 1.56 1.2-.33 2.47-.495 3.75-.495s2.55.165 3.75.495c2.865-1.965 4.125-1.56 4.125-1.56.82 2.04.3 3.555.15 3.93.96 1.05 1.545 2.4 1.545 4.05 0 5.805-3.555 7.11-6.915 7.47.54.465 1.005 1.35 1.005 2.715 0 1.965-.015 3.54-.015 4.02 0 .42.225.915.84.765C20.565 21.795 24 17.31 24 12c0-6.63-5.37-12-12-12z"/>
-                        </svg>
-                        GitHub
-                    </button>
-                </div>
-                <div class="footer-text">
-                    Sudah punya akun? <a href="#" onclick="switchTab('login'); return false;">Masuk sekarang</a>
-                </div>
-            </form>
-        </div>
+        <div class="logo">💬</div>
+
+        <h1>RoomChat</h1>
+
+        <p>
+            Chat langsung antar perangkat menggunakan
+            koneksi P2P WebRTC.
+        </p>
+
+        <input
+            id="nameInput"
+            class="input"
+            type="text"
+            maxlength="30"
+            placeholder="Nama kamu"
+        >
+
+        <input
+            id="roomInput"
+            class="input"
+            type="text"
+            maxlength="40"
+            placeholder="ID Room, contoh: RPL-X-01"
+        >
+
+        <button class="join-btn" onclick="joinRoom()">
+            🚀 Masuk Room
+        </button>
+
     </div>
 
-    <script>
-        function getAccounts() {
-            try {
-                return JSON.parse(localStorage.getItem('goldenStoreAccounts') || '[]');
-            } catch {
-                return [];
-            }
+</section>
+
+
+<!-- CHAT -->
+
+<section id="chatPage">
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <h2>💬 RoomChat</h2>
+
+            <div class="room">
+                Room:
+                <strong id="roomLabel"></strong>
+            </div>
+
+        </div>
+
+        <div class="members-title">
+            Anggota Online
+        </div>
+
+        <div id="members"></div>
+
+        <div class="sidebar-bottom">
+            <div class="my-name">
+                Kamu:
+                <strong id="myName"></strong>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="header">
+
+            <div class="header-left">
+
+                <h3 id="headerRoom">
+                    Room Chat
+                </h3>
+
+                <div id="connectionStatus"
+                     class="connection">
+                    Menghubungkan...
+                </div>
+
+            </div>
+
+            <div class="header-actions">
+
+                <button onclick="copyRoom()">
+                    📋 Salin Room
+                </button>
+
+                <button onclick="leaveRoom()">
+                    Keluar
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <div id="messages">
+
+            <div class="system">
+                Masuk ke room untuk mulai chatting.
+            </div>
+
+        </div>
+
+
+        <div class="composer">
+
+            <div class="composer-inner">
+
+                <button
+                    class="icon-btn"
+                    onclick="document.getElementById('fileInput').click()">
+                    📎
+                </button>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    onchange="sendFile()"
+                >
+
+                <input
+                    id="messageInput"
+                    type="text"
+                    placeholder="Tulis pesan..."
+                    autocomplete="off"
+                >
+
+                <button
+                    class="send-btn"
+                    onclick="sendMessage()">
+                    ➤
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</section>
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/*
+====================================================
+ ROOMCHAT P2P
+====================================================
+
+Tidak menggunakan:
+- Firebase
+- Database
+- Backend chat
+- Penyimpanan pesan
+
+WebRTC DataChannel digunakan untuk mengirim:
+- pesan
+- file
+
+PeerJS digunakan sebagai signaling agar perangkat
+berbeda dapat menemukan koneksi awal.
+
+====================================================
+*/
+
+
+let peer = null;
+let roomPeer = null;
+
+let myName = "";
+let roomId = "";
+
+let connections = {};
+
+let users = {};
+
+
+/* ===============================
+   UTILITIES
+================================ */
+
+function randomId(length = 8){
+
+    const chars =
+        "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    let result = "";
+
+    for(let i=0;i<length;i++){
+
+        result +=
+            chars[Math.floor(Math.random()*chars.length)];
+
+    }
+
+    return result;
+}
+
+
+function escapeHTML(text){
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+function formatBytes(bytes){
+
+    if(bytes === 0) return "0 Bytes";
+
+    const sizes =
+        ["Bytes","KB","MB","GB"];
+
+    const i =
+        Math.floor(
+            Math.log(bytes)/Math.log(1024)
+        );
+
+    return (
+        bytes /
+        Math.pow(1024,i)
+    ).toFixed(1)
+    + " "
+    + sizes[i];
+
+}
+
+
+function timeNow(){
+
+    return new Date().toLocaleTimeString(
+        "id-ID",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+function toast(text){
+
+    const t =
+        document.getElementById("toast");
+
+    t.textContent = text;
+
+    t.classList.add("show");
+
+    setTimeout(()=>{
+        t.classList.remove("show");
+    },2500);
+
+}
+
+
+/* ===============================
+   LOGIN
+================================ */
+
+function joinRoom(){
+
+    myName =
+        document
+        .getElementById("nameInput")
+        .value
+        .trim();
+
+    roomId =
+        document
+        .getElementById("roomInput")
+        .value
+        .trim();
+
+    if(!myName){
+
+        alert("Masukkan nama kamu.");
+
+        return;
+
+    }
+
+    if(!roomId){
+
+        alert("Masukkan ID Room.");
+
+        return;
+
+    }
+
+    if(roomId.length < 3){
+
+        alert("ID Room minimal 3 karakter.");
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("loginPage")
+        .style.display = "none";
+
+    document
+        .getElementById("chatPage")
+        .style.display = "block";
+
+
+    document
+        .getElementById("myName")
+        .textContent = myName;
+
+    document
+        .getElementById("roomLabel")
+        .textContent = roomId;
+
+    document
+        .getElementById("headerRoom")
+        .textContent =
+        "#" + roomId;
+
+
+    startPeer();
+
+}
+
+
+/* ===============================
+   WEBRTC / PEERJS
+================================ */
+
+function startPeer(){
+
+    setStatus("Membuat koneksi...");
+
+    /*
+       Room ID dijadikan bagian dari ID peer.
+
+       Prefix:
+       roomchat-
+       Room:
+       roomId
+
+       Ditambah random ID supaya beberapa perangkat
+       bisa berada di room yang sama.
+    */
+
+    const safeRoom =
+        roomId
+        .replace(/[^a-zA-Z0-9_-]/g,"")
+        .slice(0,30);
+
+    roomPeer =
+        "roomchat-" +
+        safeRoom +
+        "-" +
+        randomId(8);
+
+
+    peer = new Peer(roomPeer, {
+
+        debug: 1,
+
+        config: {
+
+            iceServers: [
+
+                {
+                    urls:
+                    "stun:stun.l.google.com:19302"
+                },
+
+                {
+                    urls:
+                    "stun:stun1.l.google.com:19302"
+                }
+
+            ]
+
         }
 
-        function saveAccount(account) {
-            const accounts = getAccounts();
-            accounts.push(account);
-            localStorage.setItem('goldenStoreAccounts', JSON.stringify(accounts));
+    });
+
+
+    peer.on("open", function(id){
+
+        setStatus(
+            "Online • Menunggu anggota lain..."
+        );
+
+        addMember(
+            roomPeer,
+            myName,
+            true
+        );
+
+
+        /*
+           Karena PeerJS ID tidak bisa dicari hanya
+           berdasarkan room, kita menggunakan broadcast
+           discovery melalui PeerJS room-discovery.
+
+           Host room menggunakan ID deterministik.
+        */
+
+        connectToRoom();
+
+
+    });
+
+
+    peer.on("connection", function(conn){
+
+        setupConnection(conn);
+
+    });
+
+
+    peer.on("error", function(err){
+
+        console.error(err);
+
+        if(err.type === "unavailable-id"){
+
+            /*
+              Jika ID bentrok, buat ID baru.
+            */
+
+            roomPeer =
+                "roomchat-" +
+                roomId
+                .replace(/[^a-zA-Z0-9_-]/g,"")
+                .slice(0,30) +
+                "-" +
+                randomId(8);
+
+            return;
+
         }
 
-        function showError(message, isNoAccount) {
-            const existing = document.querySelector('.auth-error');
-            if (existing) existing.remove();
+        setStatus(
+            "Koneksi mengalami masalah"
+        );
 
-            const error = document.createElement('div');
-            error.className = 'auth-error';
-            error.textContent = message;
+    });
 
-            if (isNoAccount) {
-                error.style.cssText = 'color:#78350f;background:#fffbeb;border:1px solid #fcd34d;padding:14px 18px;border-radius:12px;margin-bottom:18px;font-size:0.95rem;font-weight:600;text-align:center;animation:shake 0.6s ease-in-out, fadeIn 0.4s ease;';
-                const registerBtn = document.querySelectorAll('.tab-btn')[1];
-                registerBtn.classList.add('highlight');
-                setTimeout(() => registerBtn.classList.remove('highlight'), 3000);
-            } else {
-                error.style.cssText = 'color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:0.92rem;font-weight:500;';
+
+    peer.on("disconnected", function(){
+
+        setStatus(
+            "Terputus dari server signaling"
+        );
+
+    });
+
+
+    peer.on("close", function(){
+
+        setStatus("Koneksi ditutup");
+
+    });
+
+}
+
+
+/*
+====================================================
+DISCOVERY
+
+Agar ID ROOM dapat digunakan, kita membuat peer
+khusus untuk room.
+
+Peer room berfungsi sebagai "directory" koneksi,
+bukan tempat menyimpan chat/file.
+
+====================================================
+*/
+
+function connectToRoom(){
+
+    /*
+       Kita mencoba beberapa kemungkinan peer
+       directory untuk room.
+
+       Dalam implementasi production sebaiknya
+       memakai signaling server sendiri.
+
+       Untuk demo satu-file, kita menggunakan
+       PeerJS signaling sebagai penghubung.
+    */
+
+    setStatus(
+        "Mencari anggota room..."
+    );
+
+
+    /*
+       Hubungkan ke peer yang diketahui melalui
+       localStorage jika perangkat pernah terhubung.
+
+       Ini membantu perangkat yang sama.
+    */
+
+    const known =
+        JSON.parse(
+            localStorage.getItem(
+                "roomchat-" + roomId
+            ) || "[]"
+        );
+
+
+    known.forEach(id => {
+
+        if(id !== roomPeer){
+
+            try{
+
+                const conn =
+                    peer.connect(
+                        id,
+                        {
+                            reliable:true,
+                            metadata:{
+                                name:myName
+                            }
+                        }
+                    );
+
+                setupConnection(conn);
+
+            }catch(e){
+
+                console.log(e);
+
             }
 
-            const activeForm = document.querySelector('.form-content.active');
-            if (activeForm && activeForm.tagName === 'FORM') {
-                activeForm.insertBefore(error, activeForm.firstChild);
-            }
         }
 
-        function showSuccess(message) {
-            const existing = document.querySelector('.auth-success');
-            if (existing) existing.remove();
+    });
 
-            const success = document.createElement('div');
-            success.className = 'auth-success';
-            success.textContent = message;
-            const activeForm = document.querySelector('.form-content.active');
-            if (activeForm && activeForm.tagName === 'FORM') {
-                activeForm.insertBefore(success, activeForm.firstChild);
+
+    /*
+       Simpan ID peer sendiri.
+
+       CATATAN:
+       localStorage hanya menyimpan daftar ID
+       perangkat, bukan isi pesan/file.
+    */
+
+    known.push(roomPeer);
+
+    localStorage.setItem(
+        "roomchat-" + roomId,
+        JSON.stringify(
+            [...new Set(known)].slice(-50)
+        )
+    );
+
+}
+
+
+/* ===============================
+   CONNECTION
+================================ */
+
+function setupConnection(conn){
+
+    if(
+        !conn ||
+        connections[conn.peer]
+    ){
+
+        return;
+
+    }
+
+
+    connections[conn.peer] = conn;
+
+
+    conn.on("open", function(){
+
+        console.log(
+            "Connected:",
+            conn.peer
+        );
+
+
+        /*
+           Kirim informasi user
+        */
+
+        conn.send({
+
+            type:"user",
+
+            name:myName,
+
+            id:roomPeer
+
+        });
+
+
+        /*
+           Kirim daftar peer yang kita kenal
+           supaya room bisa berkembang.
+        */
+
+        conn.send({
+
+            type:"peer-list",
+
+            peers:Object.keys(connections)
+
+        });
+
+
+        setStatus(
+            "Terhubung • P2P aktif"
+        );
+
+    });
+
+
+    conn.on("data", function(data){
+
+        receiveData(
+            data,
+            conn
+        );
+
+    });
+
+
+    conn.on("close", function(){
+
+        delete connections[
+            conn.peer
+        ];
+
+        removeMember(
+            conn.peer
+        );
+
+        addSystemMessage(
+            "Salah satu anggota keluar."
+        );
+
+    });
+
+
+    conn.on("error", function(error){
+
+        console.error(error);
+
+    });
+
+}
+
+
+/* ===============================
+   DATA
+================================ */
+
+function receiveData(data, conn){
+
+    if(!data) return;
+
+
+    if(data.type === "user"){
+
+        addMember(
+            data.id,
+            data.name,
+            false
+        );
+
+        return;
+
+    }
+
+
+    if(data.type === "peer-list"){
+
+        data.peers.forEach(id => {
+
+            if(
+                id !== roomPeer &&
+                !connections[id]
+            ){
+
+                try{
+
+                    const newConn =
+                        peer.connect(
+                            id,
+                            {
+                                reliable:true,
+                                metadata:{
+                                    name:myName
+                                }
+                            }
+                        );
+
+                    setupConnection(newConn);
+
+                }catch(e){
+
+                    console.log(e);
+
+                }
+
             }
-        }
 
-        function switchTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const loginBtn = document.querySelectorAll('.tab-btn')[0];
-            const registerBtn = document.querySelectorAll('.tab-btn')[1];
-            const formTitle = document.getElementById('form-title');
-            const formSubtitle = document.getElementById('form-subtitle');
+        });
 
-            document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.remove());
+        return;
 
-            if (tab === 'login') {
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-                loginBtn.classList.add('active');
-                registerBtn.classList.remove('active');
-                formTitle.textContent = 'Masuk ke Akun';
-                formSubtitle.textContent = 'Selamat datang! Silakan masuk untuk melanjutkan.';
-            } else {
-                registerForm.classList.add('active');
-                loginForm.classList.remove('active');
-                registerBtn.classList.add('active');
-                loginBtn.classList.remove('active');
-                formTitle.textContent = 'Buat Akun Baru';
-                formSubtitle.textContent = 'Bergabung dengan kami dan nikmati pengalaman berbelanja premium.';
-            }
-        }
+    }
 
-        function handleLogin(e) {
+
+    if(data.type === "message"){
+
+        showMessage(
+
+            data.name,
+
+            data.text,
+
+            data.time,
+
+            false
+
+        );
+
+        return;
+
+    }
+
+
+    if(data.type === "file"){
+
+        receiveFile(
+            data
+        );
+
+        return;
+
+    }
+
+}
+
+
+/* ===============================
+   SEND MESSAGE
+================================ */
+
+function sendMessage(){
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+    const text =
+        input.value.trim();
+
+
+    if(!text){
+
+        return;
+
+    }
+
+
+    showMessage(
+
+        myName,
+
+        text,
+
+        timeNow(),
+
+        true
+
+    );
+
+
+    broadcast({
+
+        type:"message",
+
+        name:myName,
+
+        text:text,
+
+        time:timeNow()
+
+    });
+
+
+    input.value = "";
+
+    input.focus();
+
+}
+
+
+/* ENTER */
+
+document
+.getElementById("messageInput")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+            && !e.shiftKey
+        ){
+
             e.preventDefault();
-            const form = e.target;
-            const btn = form.querySelector('.btn-primary');
-            const originalText = btn.textContent;
-            const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
-            const password = form.querySelector('input[type="password"]').value;
 
-            btn.textContent = 'Sedang masuk...';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
+            sendMessage();
 
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.disabled = false;
-                btn.style.opacity = '1';
-
-                const accounts = getAccounts();
-                const account = accounts.find(a => a.email.toLowerCase() === email);
-
-                if (!account) {
-                    showError('Akun belum dibuat nih! Buat akun dulu ya, lalu login lagi.', true);
-                    return;
-                }
-
-                if (account.password !== password) {
-                    showError('Kata sandi salah. Silakan coba lagi.');
-                    return;
-                }
-
-                showSuccess('Login berhasil! Selamat datang, ' + account.name + '.');
-                setTimeout(() => {
-                    window.location.href = 'menu.html';
-                }, 800);
-            }, 600);
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            const form = e.target;
-            const btn = form.querySelector('.btn-primary');
-            const originalText = btn.textContent;
-            const name = form.querySelectorAll('input[type="text"]')[0].value.trim();
-            const email = form.querySelector('input[type="email"]').value.trim().toLowerCase();
-            const password = form.querySelector('#reg-password').value;
-            const confirm = form.querySelector('#reg-confirm').value;
+    }
+);
 
-            if (password !== confirm) {
-                showError('Konfirmasi kata sandi tidak cocok.');
-                return;
+
+/* ===============================
+   BROADCAST
+================================ */
+
+function broadcast(data){
+
+    Object.values(
+        connections
+    ).forEach(conn => {
+
+        if(conn.open){
+
+            try{
+
+                conn.send(data);
+
+            }catch(e){
+
+                console.error(e);
+
             }
 
-            const accounts = getAccounts();
-            if (accounts.find(a => a.email.toLowerCase() === email)) {
-                showError('Email sudah terdaftar. Silakan masuk.');
-                return;
+        }
+
+    });
+
+}
+
+
+/* ===============================
+   DISPLAY MESSAGE
+================================ */
+
+function showMessage(
+    name,
+    text,
+    time,
+    mine
+){
+
+    const container =
+        document.getElementById(
+            "messages"
+        );
+
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "message-row"
+        + (mine ? " mine" : "");
+
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message";
+
+
+    message.innerHTML = `
+
+        <div class="sender">
+            ${escapeHTML(name)}
+        </div>
+
+        <div class="message-text">
+            ${escapeHTML(text)}
+        </div>
+
+        <div class="time">
+            ${escapeHTML(time)}
+        </div>
+
+    `;
+
+
+    row.appendChild(message);
+
+    container.appendChild(row);
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+/* ===============================
+   FILE
+================================ */
+
+async function sendFile(){
+
+    const input =
+        document.getElementById(
+            "fileInput"
+        );
+
+    const file =
+        input.files[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    /*
+       File besar bisa melebihi kemampuan
+       DataChannel/browser.
+
+       Kita batasi 50MB untuk demo.
+    */
+
+    if(file.size > 50 * 1024 * 1024){
+
+        alert(
+            "Untuk versi ini ukuran file maksimal 50 MB."
+        );
+
+        input.value = "";
+
+        return;
+
+    }
+
+
+    /*
+       Baca file menjadi ArrayBuffer.
+    */
+
+    const buffer =
+        await file.arrayBuffer();
+
+
+    /*
+       ArrayBuffer tidak aman dikirim sekaligus
+       pada semua browser.
+
+       Kita pecah menjadi chunk.
+    */
+
+    const chunkSize =
+        16 * 1024;
+
+
+    const total =
+        Math.ceil(
+            buffer.byteLength /
+            chunkSize
+        );
+
+
+    const fileId =
+        randomId(16);
+
+
+    /*
+       Kirim informasi file.
+    */
+
+    broadcast({
+
+        type:"file",
+
+        action:"start",
+
+        fileId:fileId,
+
+        name:file.name,
+
+        size:file.size,
+
+        mime:file.type || "application/octet-stream",
+
+        total:total,
+
+        sender:myName,
+
+        time:timeNow()
+
+    });
+
+
+    /*
+       Kirim chunk.
+    */
+
+    for(
+        let i=0;
+        i<total;
+        i++
+    ){
+
+        const start =
+            i * chunkSize;
+
+        const end =
+            Math.min(
+                start + chunkSize,
+                buffer.byteLength
+            );
+
+
+        const chunk =
+            buffer.slice(
+                start,
+                end
+            );
+
+
+        broadcast({
+
+            type:"file",
+
+            action:"chunk",
+
+            fileId:fileId,
+
+            index:i,
+
+            total:total,
+
+            data:chunk
+
+        });
+
+
+        /*
+           Sedikit jeda supaya browser
+           tidak terlalu dibebani.
+        */
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    3
+                )
+        );
+
+    }
+
+
+    broadcast({
+
+        type:"file",
+
+        action:"end",
+
+        fileId:fileId
+
+    });
+
+
+    /*
+       Tampilkan file pada pengirim.
+    */
+
+    showFileMessage(
+
+        myName,
+
+        file.name,
+
+        file.size,
+
+        file.type,
+
+        buffer,
+
+        true,
+
+        timeNow()
+
+    );
+
+
+    input.value = "";
+
+}
+
+
+/* ===============================
+   RECEIVE FILE
+================================ */
+
+const incomingFiles = {};
+
+
+function receiveFile(data){
+
+    const id =
+        data.fileId;
+
+
+    if(data.action === "start"){
+
+        incomingFiles[id] = {
+
+            name:data.name,
+
+            size:data.size,
+
+            mime:data.mime,
+
+            total:data.total,
+
+            sender:data.sender,
+
+            time:data.time,
+
+            chunks:[],
+
+            received:0
+
+        };
+
+        return;
+
+    }
+
+
+    if(data.action === "chunk"){
+
+        if(
+            !incomingFiles[id]
+        ){
+
+            return;
+
+        }
+
+
+        incomingFiles[id]
+            .chunks[data.index] =
+            data.data;
+
+
+        incomingFiles[id]
+            .received++;
+
+
+        return;
+
+    }
+
+
+    if(data.action === "end"){
+
+        const file =
+            incomingFiles[id];
+
+
+        if(!file){
+
+            return;
+
+        }
+
+
+        /*
+           Gabungkan semua chunk.
+        */
+
+        const blob =
+            new Blob(
+                file.chunks,
+                {
+                    type:file.mime
+                }
+            );
+
+
+        showFileMessage(
+
+            file.sender,
+
+            file.name,
+
+            file.size,
+
+            file.mime,
+
+            blob,
+
+            false,
+
+            file.time
+
+        );
+
+
+        delete incomingFiles[id];
+
+    }
+
+}
+
+
+/* ===============================
+   FILE MESSAGE UI
+================================ */
+
+function showFileMessage(
+    sender,
+    name,
+    size,
+    mime,
+    data,
+    mine,
+    time
+){
+
+    const container =
+        document.getElementById(
+            "messages"
+        );
+
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "message-row"
+        + (mine ? " mine" : "");
+
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message";
+
+
+    const blob =
+        data instanceof Blob
+        ? data
+        : new Blob(
+            [data],
+            {
+                type:mime
             }
+        );
 
-            btn.textContent = 'Mendaftar...';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
 
-            setTimeout(() => {
-                saveAccount({ name, email, password });
+    const url =
+        URL.createObjectURL(
+            blob
+        );
 
-                btn.textContent = originalText;
-                btn.disabled = false;
-                btn.style.opacity = '1';
 
-                showSuccess('Pendaftaran berhasil! Selamat datang, ' + name + '.');
-                setTimeout(() => {
-                    window.location.href = 'menu.html';
-                }, 600);
-            }, 400);
+    const safeName =
+        escapeHTML(name);
+
+
+    message.innerHTML = `
+
+        <div class="sender">
+            ${escapeHTML(sender)}
+        </div>
+
+        <div class="file-card">
+
+            <div class="file-icon">
+                📄
+            </div>
+
+            <div class="file-info">
+
+                <div class="file-name">
+                    ${safeName}
+                </div>
+
+                <div class="file-size">
+                    ${formatBytes(size)}
+                </div>
+
+            </div>
+
+            <button
+                class="download-btn"
+                onclick="downloadFile(
+                    '${url}',
+                    '${safeName}'
+                )">
+
+                ⬇
+
+            </button>
+
+        </div>
+
+        <div class="time">
+            ${escapeHTML(time)}
+        </div>
+
+    `;
+
+
+    row.appendChild(message);
+
+    container.appendChild(row);
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+function downloadFile(
+    url,
+    filename
+){
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download = filename;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+}
+
+
+/* ===============================
+   MEMBERS
+================================ */
+
+function addMember(
+    id,
+    name,
+    me=false
+){
+
+    users[id] = {
+
+        name:name,
+
+        me:me
+
+    };
+
+
+    renderMembers();
+
+}
+
+
+function removeMember(id){
+
+    delete users[id];
+
+    renderMembers();
+
+}
+
+
+function renderMembers(){
+
+    const container =
+        document.getElementById(
+            "members"
+        );
+
+
+    container.innerHTML = "";
+
+
+    Object.entries(users)
+    .forEach(
+        ([id,user]) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "member";
+
+
+            const avatar =
+                document.createElement(
+                    "div"
+                );
+
+            avatar.className =
+                "avatar";
+
+            avatar.textContent =
+                user.name
+                .charAt(0)
+                .toUpperCase();
+
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+            info.className =
+                "member-info";
+
+
+            info.innerHTML = `
+
+                <div class="member-name">
+                    ${escapeHTML(user.name)}
+                    ${user.me ? " (Kamu)" : ""}
+                </div>
+
+                <div class="online">
+                    ● online
+                </div>
+
+            `;
+
+
+            item.appendChild(
+                avatar
+            );
+
+            item.appendChild(
+                info
+            );
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* ===============================
+   SYSTEM MESSAGE
+================================ */
+
+function addSystemMessage(text){
+
+    const container =
+        document.getElementById(
+            "messages"
+        );
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.className =
+        "system";
+
+    div.textContent =
+        text;
+
+    container.appendChild(div);
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+/* ===============================
+   STATUS
+================================ */
+
+function setStatus(text){
+
+    document
+        .getElementById(
+            "connectionStatus"
+        )
+        .textContent = text;
+
+}
+
+
+/* ===============================
+   COPY ROOM
+================================ */
+
+function copyRoom(){
+
+    navigator.clipboard
+    .writeText(roomId)
+    .then(()=>{
+
+        toast(
+            "ID Room berhasil disalin."
+        );
+
+    })
+    .catch(()=>{
+
+        alert(
+            "ID Room: " + roomId
+        );
+
+    });
+
+}
+
+
+/* ===============================
+   LEAVE
+================================ */
+
+function leaveRoom(){
+
+    if(
+        peer
+    ){
+
+        try{
+
+            peer.destroy();
+
+        }catch(e){}
+
+    }
+
+
+    Object.values(
+        connections
+    ).forEach(conn => {
+
+        try{
+
+            conn.close();
+
+        }catch(e){}
+
+    });
+
+
+    connections = {};
+
+    users = {};
+
+    document
+        .getElementById("messages")
+        .innerHTML = `
+            <div class="system">
+                Masuk ke room untuk mulai chatting.
+            </div>
+        `;
+
+
+    document
+        .getElementById("chatPage")
+        .style.display = "none";
+
+
+    document
+        .getElementById("loginPage")
+        .style.display = "flex";
+
+
+    document
+        .getElementById("passwordInput");
+
+}
+
+
+/* ===============================
+   START
+================================ */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(peer){
+
+            try{
+
+                peer.destroy();
+
+            }catch(e){}
+
         }
 
-        function setupPasswordMatch() {
-            const passwordInput = document.getElementById('reg-password');
-            const confirmInput = document.getElementById('reg-confirm');
-            const form = document.getElementById('register-form');
+    }
+);
 
-            let warningEl = document.getElementById('password-match-warning');
+</script>
 
-            const updateWarning = () => {
-                if (!warningEl && passwordInput.value && confirmInput.value && passwordInput.value !== confirmInput.value) {
-                    warningEl = document.createElement('div');
-                    warningEl.id = 'password-match-warning';
-                    warningEl.style.cssText = 'color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:10px 14px;border-radius:10px;margin-top:8px;font-size:0.88rem;font-weight:500;';
-                    confirmInput.parentNode.appendChild(warningEl);
-                }
-
-                if (warningEl) {
-                    if (passwordInput.value && confirmInput.value && passwordInput.value !== confirmInput.value) {
-                        warningEl.textContent = 'Kata sandi tidak cocok.';
-                        warningEl.style.display = 'block';
-                    } else {
-                        warningEl.style.display = 'none';
-                    }
-                }
-            };
-
-            passwordInput.addEventListener('input', updateWarning);
-            confirmInput.addEventListener('input', updateWarning);
-        }
-
-        setupPasswordMatch();
-    </script>
 </body>
 </html>
